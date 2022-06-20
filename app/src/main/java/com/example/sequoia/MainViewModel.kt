@@ -6,6 +6,7 @@ class MainViewModel : ViewModel() {
 
     val greetingsName : String = "Tara"
 
+// commented out for now - will be uncommented when needed
 //    companion object {
 //        @Suppress("UNCHECKED_CAST")
 //        fun factory(
