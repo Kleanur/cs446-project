@@ -3,6 +3,7 @@ package com.example.sequoia
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.*
@@ -39,7 +40,7 @@ class MainActivity : ComponentActivity() {
                     HomeScreen(navController = navController)
                 }
                 composable(route = Routes.Games.route) {
-                    GamesScreen()
+                    GamesScreen(navController = navController)
                 }
 
                 composable(route = Routes.SimonSaysGame.route) {
@@ -68,7 +69,7 @@ fun HomeScreen(mainViewModel: MainViewModel = viewModel(), navController: NavCon
         ) {
             ConstraintLayout {
                 // Create references for the composables to constrain
-                val (historyBtn, settingBtn, gamesBtn, nameHeaderTxt) = createRefs()
+                val (treeTmg, historyBtn, settingBtn, gamesBtn, nameHeaderTxt) = createRefs()
 
                 Text(
                     text = "Sequoia", fontSize = 32.sp, fontWeight = FontWeight.Bold,
@@ -119,20 +120,7 @@ fun HomeScreen(mainViewModel: MainViewModel = viewModel(), navController: NavCon
                             textAlign = TextAlign.Start,
                         )
                     }
-//                    Button(
-//                        {
-//                        ConstraintLayout {
-//                            // Create references for the composables to constrain
-//                            val (playBtnText, playBtnIcon) = createRefs()
-
-
 //
-//                            Icon(
-//                                modifier = Modifier.fillMaxWidth(),
-//                                contentDescription = null,
-//                            )
-//                        }
-//                    }
                 }
 
                 Box(
@@ -212,6 +200,14 @@ fun HomeScreen(mainViewModel: MainViewModel = viewModel(), navController: NavCon
                         )
                     }
                 }
+                Image(painter = painterResource(R.drawable.tree_home), contentDescription = "Image for Home Screen",  modifier = Modifier
+                    .constrainAs(treeTmg) {
+                        top.linkTo(historyBtn.bottom, margin = 24.dp)
+                        start.linkTo(parent.start, margin = 16.dp)
+                        end.linkTo(parent.end, margin = 16.dp)
+                    }
+                    .height(240.dp)
+                    .padding(start = 16.dp, end = 16.dp) )
 
             }
         }
@@ -219,17 +215,192 @@ fun HomeScreen(mainViewModel: MainViewModel = viewModel(), navController: NavCon
 }
 
 @Composable
-fun GamesScreen() {
+fun GamesScreen(mainViewModel: MainViewModel = viewModel(), navController: NavController) {
     SequoiaTheme() {
         Surface(
             modifier = Modifier.fillMaxSize(),
             color = MaterialTheme.colorScheme.background
         ) {
-            Greeting(name = "GAMES")
+            ConstraintLayout {
+                // Create references for the composables to constrain
+                val (LicketySplitBtn, SimonSaysBtn, PitchPerfectBtn, GotRythmBtn, nameHeaderTxt) = createRefs()
+
+                Text(
+                    text = "Games", fontSize = 32.sp, fontWeight = FontWeight.Bold,
+                    color = colorResource(id = R.color.Games_txt_green),
+                    modifier = Modifier.constrainAs(nameHeaderTxt) {
+                        top.linkTo(parent.top, margin = 48.dp)
+                        start.linkTo(parent.start, margin = 135.dp)
+                        end.linkTo(parent.end, margin = 48.dp)
+                        width = Dimension.matchParent
+                    },
+                    textAlign = TextAlign.Start,
+                )
+
+                Box(
+                    modifier = Modifier
+                        .constrainAs(SimonSaysBtn) {
+                            top.linkTo(nameHeaderTxt.bottom, margin = 24.dp)
+                            start.linkTo(parent.start, margin = 16.dp)
+                            end.linkTo(parent.end, margin = 16.dp)
+                        }
+                        .height(100.dp)
+                        .padding(start = 16.dp, end = 16.dp)
+                ) {
+                    Button(
+                        onClick = {
+                            navController.navigate(Routes.SimonSaysGame.route) {
+                                popUpTo(Routes.Games.route)
+                            }
+                        },
+                        Modifier.fillMaxSize(),
+                        shape = RoundedCornerShape(20),
+                        colors = ButtonDefaults.buttonColors(colorResource(id = R.color.Game_button_background_dark_green))
+                    ) {
+
+                        Icon(
+                            painter = painterResource(R.drawable.simonsays_icon),
+                            contentDescription = "Play button content description.",
+                            tint = Color.Unspecified,
+                        )
+
+                        Text(
+                            modifier = Modifier
+                                .fillMaxSize(),
+                            text = "Simon Says",
+                            fontSize = 24.sp,
+                            fontWeight = FontWeight.Bold,
+                            color = colorResource(R.color.white),
+                            textAlign = TextAlign.Start,
+                        )
+                    }
+//
+                }
+
+                Box(
+                    modifier = Modifier
+                        .constrainAs(PitchPerfectBtn) {
+                            top.linkTo(SimonSaysBtn.bottom, margin = 24.dp)
+                            start.linkTo(parent.start, margin = 16.dp)
+                            end.linkTo(parent.end, margin = 16.dp)
+                        }
+                        .height(100.dp)
+                        .padding(start = 16.dp, end = 16.dp)
+                ) {
+                    Button(
+                        onClick = {
+                            navController.navigate(Routes.SimonSaysGame.route) {
+                                popUpTo(Routes.Games.route)
+                            }
+                        },
+                        Modifier.fillMaxSize(),
+                        shape = RoundedCornerShape(20),
+                        colors = ButtonDefaults.buttonColors(colorResource(id = R.color.Game_button_background_dark_green))
+                    ) {
+
+                        Icon(
+                            painter = painterResource(R.drawable.pitchperfect_icon),
+                            contentDescription = "Setting button content description.",
+                            tint = Color.Unspecified,
+                        )
+
+                        Text(
+                            modifier = Modifier
+                                .fillMaxSize(),
+                            text = "Pitch Perfect",
+                            fontSize = 24.sp,
+                            fontWeight = FontWeight.Bold,
+                            color = colorResource(R.color.white),
+                            textAlign = TextAlign.Start,
+                        )
+                    }
+                }
+
+                Box(
+                    modifier = Modifier
+                        .constrainAs(GotRythmBtn) {
+                            top.linkTo(PitchPerfectBtn.bottom, margin = 24.dp)
+                            start.linkTo(parent.start, margin = 16.dp)
+                            end.linkTo(parent.end, margin = 16.dp)
+                        }
+                        .height(100.dp)
+                        .padding(start = 16.dp, end = 16.dp)
+                ) {
+                    Button(
+                        onClick = {
+                            navController.navigate(Routes.SimonSaysGame.route) {
+                                popUpTo(Routes.Games.route)
+                            }
+                        },
+                        Modifier.fillMaxSize(),
+                        shape = RoundedCornerShape(20),
+                        colors = ButtonDefaults.buttonColors(colorResource(id = R.color.Game_button_background_dark_green))
+                    ) {
+
+                        Icon(
+                            painter = painterResource(R.drawable.gotrhythm_icon),
+                            contentDescription = "History button content description.",
+                            tint = Color.Unspecified,
+                        )
+
+                        Text(
+                            modifier = Modifier
+                                .fillMaxSize(),
+                            text = "Got Rhythm",
+                            fontSize = 24.sp,
+                            fontWeight = FontWeight.Bold,
+                            color = colorResource(R.color.white),
+                            textAlign = TextAlign.Start,
+                        )
+                    }
+                }
+
+                Box(
+                    modifier = Modifier
+                        .constrainAs(LicketySplitBtn) {
+                            top.linkTo(GotRythmBtn.bottom, margin = 24.dp)
+                            start.linkTo(parent.start, margin = 16.dp)
+                            end.linkTo(parent.end, margin = 16.dp)
+                        }
+                        .height(100.dp)
+                        .padding(start = 16.dp, end = 16.dp)
+                ) {
+                    Button(
+                        onClick = {
+                            navController.navigate(Routes.SimonSaysGame.route) {
+                                popUpTo(Routes.Games.route)
+                            }
+                        },
+                        Modifier.fillMaxSize(),
+                        shape = RoundedCornerShape(20),
+                        colors = ButtonDefaults.buttonColors(colorResource(id = R.color.Game_button_background_dark_green))
+                    ) {
+
+                        Icon(
+                            painter = painterResource(R.drawable.licketysplit_icon),
+                            contentDescription = "History button content description.",
+                            tint = Color.Unspecified,
+                        )
+
+                        Text(
+                            modifier = Modifier
+                                .fillMaxSize(),
+                            text = "Lickety Split",
+                            fontSize = 24.sp,
+                            fontWeight = FontWeight.Bold,
+                            color = colorResource(R.color.white),
+                            textAlign = TextAlign.Start,
+                        )
+                    }
+                }
+
+
+            }
         }
     }
-
 }
+
+
 
 @Composable
 fun SimonSaysGameScreen() {

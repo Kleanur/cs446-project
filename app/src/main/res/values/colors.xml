@@ -9,11 +9,17 @@
     <color name="white">#FFFFFFFF</color>
 
     // Custom Color definition
+    //Home Screen
     <color name="play_text_dark_green">#159A22</color>
     <color name="play_button_background_olive_green">#EBFFED</color>
     <color name="history_button_background_light_blue">#EBF8FF</color>
     <color name="setting_button_dark_purple">#88449F</color>
     <color name="history_button_dark_blue">#156A9A</color>
     <color name="setting_button_background_light_purple">#F8F2FF</color>
+
+    //Games Screen
+    <color name="Game_button_background_dark_green">#4F814E</color>
+    <color name="Games_txt_green">#159A22</color>
+
 
 </resources>
