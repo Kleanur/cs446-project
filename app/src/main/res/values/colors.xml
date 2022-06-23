@@ -21,5 +21,7 @@
     <color name="game_button_background_dark_green">#4F814E</color>
     <color name="games_txt_green">#159A22</color>
 
+    <color name="button_pressed">#800080</color>
+
 
 </resources>
