@@ -1,6 +1,5 @@
 package com.example.sequoia.ui.simonsaysgame
 
-import android.view.View
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
@@ -34,6 +33,9 @@ class SimonSaysViewModel : ViewModel() {
 
         // remaining number of times player can make errors
         // game over if reaches 0
-        val attemptsLeft: Int = 3
-    ) {}
+        val attemptsLeft: Int = 3,
+
+        // indicates if the game has started yet
+        val gameRunning: Boolean = false
+    )
 }
