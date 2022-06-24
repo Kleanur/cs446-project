@@ -6,6 +6,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.Button
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -53,9 +54,17 @@ fun DrawSimonSaysBoard() {
             Text(
                 text = "Chances: ${viewState.attemptsLeft}"
             )
+            if (!viewState.gameRunning) {
+                Button(onClick ={/*TODO*/} ) {
+                    Text(
+                        text = "Start"
+                    )
+                }
+            }
             Text(
                 text = "Scores: ${viewState.score}"
             )
+
         }
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,
@@ -88,7 +97,7 @@ fun squarebutton(index: Int) {
     
     val color = remember{ mutableStateOf(squareColor)}
     val i = index
-    androidx.compose.material3.Button(onClick = { /*TODO*/ },
+    Button(onClick = { /*TODO*/ },
         shape = RectangleShape,
         modifier = Modifier
             .padding(10.dp)
