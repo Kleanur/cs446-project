@@ -38,4 +38,8 @@ class SimonSaysViewModel : ViewModel() {
         // indicates if the game has started yet
         val gameRunning: Boolean = false
     )
+
+    private fun emit(state: ViewState) {
+        _viewState.value = state
+    }
 }
