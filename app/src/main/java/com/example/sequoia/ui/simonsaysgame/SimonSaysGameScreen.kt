@@ -5,11 +5,7 @@ import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
-import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.Button
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Surface
-import androidx.compose.material3.Text
+import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -24,23 +20,25 @@ import androidx.compose.ui.semantics.SemanticsProperties.Text
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.NavController
 import com.example.sequoia.R
+import com.example.sequoia.route.Routes
 import com.example.sequoia.ui.theme.SequoiaTheme
 
 @Composable
-fun SimonSaysGameScreen() {
+fun SimonSaysGameScreen(nc :NavController) {
     SequoiaTheme {
         Surface(
             modifier = Modifier.fillMaxSize(),
             color = MaterialTheme.colorScheme.background
         ) {
-            DrawSimonSaysBoard()
+            DrawSimonSaysBoard(nc)
         }
     }
 }
 
 @Composable
-fun DrawSimonSaysBoard() {
+fun DrawSimonSaysBoard(nc : NavController) {
     val viewModel = viewModel<SimonSaysViewModel>()
     val viewState = viewModel.viewState.value
     val squareColor = colorResource(id = R.color.games_txt_green)
@@ -94,6 +92,24 @@ fun DrawSimonSaysBoard() {
         }
     }
 
+    if (viewState.attemptsLeft == 0) {
+        AlertDialog(onDismissRequest = { /*TODO*/ },
+        title = {Text(text = "GAME OVER")},
+        text = {Text("Your Score: ${viewState.score}")},
+        confirmButton = {
+            Button(onClick = { viewModel.reset() }) {
+                Text("Retry?")
+            }},
+            dismissButton = {
+                Button(onClick = {
+                    nc.navigate(Routes.Games.route) {
+                    popUpTo(Routes.Home.route)
+                } }) {
+                    Text("Back to game menu")
+                }
+            }
+        )
+    }
 }
 
 

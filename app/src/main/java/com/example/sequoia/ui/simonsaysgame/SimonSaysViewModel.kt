@@ -216,19 +216,25 @@ class SimonSaysViewModel : ViewModel() {
                 }
             } else {
                 // incorrect input
+                sequenceIndex = 0
                 emit(
                     viewState.value.copy(
                         attemptsLeft = viewState.value.attemptsLeft - 1
                     )
                 )
-                if (viewState.value.attemptsLeft == 0) {
-                    // game over
-                    /* TODO - do something on game over? */
-                } else {
+                if (viewState.value.attemptsLeft != 0) {
                     replaySequence()
-                }
+                } // else game over
             }
         }
+    }
+
+    fun reset() {
+        sequence.clear()
+        sequenceIndex = 0
+        emit(
+            ViewState()
+        )
     }
 
 
