@@ -9,6 +9,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import kotlin.random.Random
 
 class SimonSaysViewModel : ViewModel() {
     private val _viewState: MutableState<ViewState> = mutableStateOf(ViewState())
@@ -54,7 +55,8 @@ class SimonSaysViewModel : ViewModel() {
 
     // extends the current sequence with a randomly generated integer
     private fun extendSequence(){
-//        sequence.append(random int [0,8])
+        sequence.add(Random.nextInt(1, 9))
+        sequence.add(Random.nextInt(1,9))
     }
 
     // toggles on square with given id to the specified state
@@ -78,22 +80,28 @@ class SimonSaysViewModel : ViewModel() {
             withContext(Dispatchers.Default) {
                 // disable player input
                 emit(
-                    state.copy(
+                    ViewState(
+                        gameRunning = true,
                         playerTurn = false
                     )
                 )
+
 
                 // animate sequence
                 for (s in sequence) {
                     delay(500)
                     emit(
                         state.copy(
+                            gameRunning = true,
+                            playerTurn = false,
                             squareStates = toggleSquare(s, 1)
                         )
                     )
                     delay(500)
                     emit(
                         state.copy(
+                            gameRunning = true,
+                            playerTurn = false,
                             squareStates = toggleSquare(s, 0)
                         )
                     )
@@ -102,6 +110,7 @@ class SimonSaysViewModel : ViewModel() {
                 // re-enable player input
                 emit(
                     state.copy(
+                        gameRunning = true,
                         playerTurn = true
                     )
                 )
