@@ -56,6 +56,7 @@ class SimonSaysViewModel : ViewModel() {
     // extends the current sequence with a randomly generated integer
     private fun extendSequence(){
         sequence.add(Random.nextInt(0, 8))
+        sequence.add(Random.nextInt(0, 8))
     }
 
     // toggles on square with given id to the specified state

@@ -16,6 +16,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.input.pointer.pointerInteropFilter
 import androidx.compose.ui.res.colorResource
@@ -42,6 +43,8 @@ fun SimonSaysGameScreen() {
 fun DrawSimonSaysBoard() {
     val viewModel = viewModel<SimonSaysViewModel>()
     val viewState = viewModel.viewState.value
+    val squareColor = colorResource(id = R.color.games_txt_green)
+    val presscolor = colorResource(id=R.color.button_pressed)
     ConstraintLayout {
         val (gamebuttons, livescore) = createRefs()
 
@@ -79,7 +82,11 @@ fun DrawSimonSaysBoard() {
             for (i in 0 until 3) {
                 Row {
                     for (j in 0 until 3) {
-                        squarebutton(i+j)
+                        if (viewState.squareStates[i * 3 +j] == 1) {
+                            squarebutton(presscolor, viewState.playerTurn, i*3 +j)
+                        } else {
+                            squarebutton(squareColor, viewState.playerTurn, i*3+j)
+                        }
                     }
                 }
             }
@@ -91,12 +98,11 @@ fun DrawSimonSaysBoard() {
 
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
-fun squarebutton(index: Int) {
+fun squarebutton(color : Color, pt: Boolean, index:Int) {
     val squareColor = colorResource(id = R.color.games_txt_green)
     val presscolor = colorResource(id=R.color.button_pressed)
     
-    val color = remember{ mutableStateOf(squareColor)}
-    val i = index
+    val color = remember{ mutableStateOf(color)}
     Button(onClick = { /*TODO*/ },
         shape = RectangleShape,
         modifier = Modifier
@@ -105,10 +111,14 @@ fun squarebutton(index: Int) {
             .pointerInteropFilter {
                 when (it.action) {
                     MotionEvent.ACTION_DOWN -> {
-                        color.value = presscolor
+                        if (pt) {
+                            color.value = presscolor
+                        }
                     }
                     MotionEvent.ACTION_UP -> {
-                        color.value = squareColor
+                        if (pt) {
+                            color.value = squareColor
+                        }
                     }
                 }
                 true
