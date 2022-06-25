@@ -55,21 +55,22 @@ class SimonSaysViewModel : ViewModel() {
 
     // extends the current sequence with a randomly generated integer
     private fun extendSequence(){
-        sequence.add(Random.nextInt(1, 9))
-        sequence.add(Random.nextInt(1,9))
+        sequence.add(Random.nextInt(0, 8))
     }
 
     // toggles on square with given id to the specified state
     // toggles off all other squares
     // e.g. id = 3, state = 1 -> [0,0,0,1,0,0,0...]
     private fun toggleSquare(id: Int, state: Int): List<Int> {
-        return List(9){0}
+        val squares = MutableList(9){0}
+        squares[id] = state
+        return squares.toList()
     }
 
     /*** Public Interface ***/
 
     // starts a new round
-    fun startRound(state: ViewState) {
+    fun startRound() {
         // prepare sequence
         extendSequence()
         sequenceIndex = 0
@@ -78,10 +79,15 @@ class SimonSaysViewModel : ViewModel() {
         // if that is the case then just put sequence back in ViewState
         viewModelScope.launch {
             withContext(Dispatchers.Default) {
+                emit(
+                    viewState.value.copy(
+                        gameRunning = true
+                    )
+                )
+
                 // disable player input
                 emit(
-                    ViewState(
-                        gameRunning = true,
+                    viewState.value.copy(
                         playerTurn = false
                     )
                 )
@@ -91,26 +97,23 @@ class SimonSaysViewModel : ViewModel() {
                 for (s in sequence) {
                     delay(500)
                     emit(
-                        state.copy(
-                            gameRunning = true,
-                            playerTurn = false,
+                        viewState.value.copy(
                             squareStates = toggleSquare(s, 1)
                         )
                     )
+                    println(viewState.value.squareStates)
                     delay(500)
                     emit(
-                        state.copy(
-                            gameRunning = true,
-                            playerTurn = false,
+                        viewState.value.copy(
                             squareStates = toggleSquare(s, 0)
                         )
                     )
+                    println(viewState.value.squareStates)
                 }
 
                 // re-enable player input
                 emit(
-                    state.copy(
-                        gameRunning = true,
+                    viewState.value.copy(
                         playerTurn = true
                     )
                 )

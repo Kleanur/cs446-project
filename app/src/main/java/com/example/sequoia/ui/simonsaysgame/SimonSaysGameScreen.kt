@@ -55,7 +55,7 @@ fun DrawSimonSaysBoard() {
                 text = "Chances: ${viewState.attemptsLeft}"
             )
             if (!viewState.gameRunning) {
-                Button(onClick ={viewModel.startRound(viewState)} ) {
+                Button(onClick ={viewModel.startRound()} ) {
                     Text(
                         text = "Start"
                     )
