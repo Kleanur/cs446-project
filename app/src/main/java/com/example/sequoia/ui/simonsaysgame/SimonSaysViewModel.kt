@@ -224,7 +224,15 @@ class SimonSaysViewModel : ViewModel() {
                 )
                 if (viewState.value.attemptsLeft != 0) {
                     replaySequence()
-                } // else game over
+                } else {
+                    // game over
+                    emit(
+                        viewState.value.copy(
+                            squareStates = toggleBoard(2),
+                            playerTurn = false
+                        )
+                    )
+                }
             }
         }
     }

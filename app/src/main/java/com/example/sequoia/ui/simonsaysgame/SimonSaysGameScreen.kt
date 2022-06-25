@@ -83,6 +83,8 @@ fun DrawSimonSaysBoard(nc : NavController) {
                     for (j in 0 until 3) {
                         if (viewState.squareStates[i * 3 +j] == 1) {
                             squarebutton(presscolor, viewState.playerTurn, i*3 +j, viewModel)
+                        } else if (viewState.squareStates[i * 3 +j] == 2) {
+                            squarebutton(Color.Red, viewState.playerTurn, i*3 +j, viewModel)
                         } else {
                             squarebutton(squareColor, viewState.playerTurn, i*3+j, viewModel)
                         }
