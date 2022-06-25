@@ -56,7 +56,6 @@ class SimonSaysViewModel : ViewModel() {
     // extends the current sequence with a randomly generated integer
     private fun extendSequence(){
         sequence.add(Random.nextInt(0, 8))
-        sequence.add(Random.nextInt(0, 8))
     }
 
     // toggles on square with given id to the specified state
@@ -68,24 +67,15 @@ class SimonSaysViewModel : ViewModel() {
         return squares.toList()
     }
 
-    /*** Public Interface ***/
+    // toggles the entire board to the specified state
+    private fun toggleBoard(state: Int): List<Int> {
+        return List(9) {state}
+    }
 
-    // starts a new round
-    fun startRound() {
-        // prepare sequence
-        extendSequence()
-        sequenceIndex = 0
-
-        // possible coroutine issue?? might refer to different memory location for sequence
-        // if that is the case then just put sequence back in ViewState
+    // start new round with sequence complete indicator
+    private fun newRound() {
         viewModelScope.launch {
             withContext(Dispatchers.Default) {
-                emit(
-                    viewState.value.copy(
-                        gameRunning = true
-                    )
-                )
-
                 // disable player input
                 emit(
                     viewState.value.copy(
@@ -93,6 +83,49 @@ class SimonSaysViewModel : ViewModel() {
                     )
                 )
 
+                // sequence complete indicator
+                emit(
+                    viewState.value.copy(
+                        squareStates = toggleBoard(1)
+                    )
+                )
+                delay(500)
+                emit(
+                    viewState.value.copy(
+                        squareStates = toggleBoard(0)
+                    )
+                )
+
+                // start the new round
+                startRound()
+            }
+        }
+    }
+
+    // replay the sequence with incorrect input indicator
+    private fun replaySequence() {
+        viewModelScope.launch {
+            withContext(Dispatchers.Default) {
+                // disable player input
+                emit(
+                    viewState.value.copy(
+                        playerTurn = false
+                    )
+                )
+
+                // incorrect input indicator
+                emit(
+                    viewState.value.copy(
+                        squareStates = toggleBoard(2)
+                    )
+                )
+                delay(500)
+                emit(
+                    viewState.value.copy(
+                        squareStates = toggleBoard(0)
+                    )
+                )
+                delay(250)
 
                 // animate sequence
                 for (s in sequence) {
@@ -102,14 +135,56 @@ class SimonSaysViewModel : ViewModel() {
                             squareStates = toggleSquare(s, 1)
                         )
                     )
-                    println(viewState.value.squareStates)
                     delay(500)
                     emit(
                         viewState.value.copy(
                             squareStates = toggleSquare(s, 0)
                         )
                     )
-                    println(viewState.value.squareStates)
+                }
+
+                // enable player input
+                emit(
+                    viewState.value.copy(
+                        playerTurn = true
+                    )
+                )
+            }
+        }
+    }
+
+    /*** Public Interface ***/
+
+    // starts a new round
+    fun startRound() {
+        // prepare sequence
+        extendSequence()
+        sequenceIndex = 0
+
+        viewModelScope.launch {
+            withContext(Dispatchers.Default) {
+                // disable player input
+                emit(
+                    viewState.value.copy(
+                        gameRunning = true,
+                        playerTurn = false
+                    )
+                )
+
+                // animate sequence
+                for (s in sequence) {
+                    delay(500)
+                    emit(
+                        viewState.value.copy(
+                            squareStates = toggleSquare(s, 1)
+                        )
+                    )
+                    delay(500)
+                    emit(
+                        viewState.value.copy(
+                            squareStates = toggleSquare(s, 0)
+                        )
+                    )
                 }
 
                 // re-enable player input
@@ -122,9 +197,38 @@ class SimonSaysViewModel : ViewModel() {
         }
     }
 
-
+    // indicates input from button with specified id
     fun receiveInput(id: Int) {
-
+        if (viewState.value.playerTurn) {
+            if (id == sequence[sequenceIndex]) {
+                // correct input
+                if (sequenceIndex == sequence.size - 1) {
+                    // end of sequence
+                    emit(
+                        viewState.value.copy(
+                            score = viewState.value.score + 1
+                        )
+                    )
+                    newRound()
+                } else {
+                    // advance sequence
+                    sequenceIndex += 1
+                }
+            } else {
+                // incorrect input
+                emit(
+                    viewState.value.copy(
+                        attemptsLeft = viewState.value.attemptsLeft - 1
+                    )
+                )
+                if (viewState.value.attemptsLeft == 0) {
+                    // game over
+                    /* TODO - do something on game over? */
+                } else {
+                    replaySequence()
+                }
+            }
+        }
     }
 
 

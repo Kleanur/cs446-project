@@ -50,7 +50,8 @@ fun DrawSimonSaysBoard() {
 
         Row (horizontalArrangement = Arrangement.SpaceBetween,
             modifier = Modifier
-                .fillMaxWidth().padding(8.dp)
+                .fillMaxWidth()
+                .padding(8.dp)
                 .constrainAs(livescore) {
                     top.linkTo(parent.top, margin = 20.dp)
                 }) {
@@ -83,9 +84,9 @@ fun DrawSimonSaysBoard() {
                 Row {
                     for (j in 0 until 3) {
                         if (viewState.squareStates[i * 3 +j] == 1) {
-                            squarebutton(presscolor, viewState.playerTurn, i*3 +j)
+                            squarebutton(presscolor, viewState.playerTurn, i*3 +j, viewModel)
                         } else {
-                            squarebutton(squareColor, viewState.playerTurn, i*3+j)
+                            squarebutton(squareColor, viewState.playerTurn, i*3+j, viewModel)
                         }
                     }
                 }
@@ -98,12 +99,13 @@ fun DrawSimonSaysBoard() {
 
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
-fun squarebutton(color : Color, pt: Boolean, index:Int) {
+fun squarebutton(color : Color, pt: Boolean, index:Int, viewModel: SimonSaysViewModel) {
     val squareColor = colorResource(id = R.color.games_txt_green)
     val presscolor = colorResource(id=R.color.button_pressed)
     
     val color = remember{ mutableStateOf(color)}
-    Button(onClick = { /*TODO*/ },
+    Button(
+        onClick = {}, // blank; overwritten by pointerInteropFilter
         shape = RectangleShape,
         modifier = Modifier
             .padding(10.dp)
@@ -118,6 +120,7 @@ fun squarebutton(color : Color, pt: Boolean, index:Int) {
                     MotionEvent.ACTION_UP -> {
                         if (pt) {
                             color.value = squareColor
+                            viewModel.receiveInput(index)
                         }
                     }
                 }
