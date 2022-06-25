@@ -93,7 +93,7 @@ fun DrawSimonSaysBoard(nc : NavController) {
     }
 
     if (viewState.attemptsLeft == 0) {
-        AlertDialog(onDismissRequest = { /*TODO*/ },
+        AlertDialog(onDismissRequest = {},
         title = {Text(text = "GAME OVER")},
         text = {Text("Your Score: ${viewState.score}")},
         confirmButton = {
