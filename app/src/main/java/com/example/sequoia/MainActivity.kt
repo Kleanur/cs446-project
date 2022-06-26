@@ -32,7 +32,7 @@ class MainActivity : ComponentActivity() {
                 }
 
                 composable(route = Routes.SimonSaysGame.route) {
-                    SimonSaysGameScreen()
+                    SimonSaysGameScreen(nc = navController)
                 }
             }
         }
