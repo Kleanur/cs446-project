@@ -13,6 +13,7 @@ import com.example.sequoia.route.Routes
 import com.example.sequoia.ui.game.GamesScreen
 import com.example.sequoia.ui.home.HomeScreen
 import com.example.sequoia.ui.history.HistoryScreen
+import com.example.sequoia.ui.settings.SettingsScreen
 import com.example.sequoia.ui.simonsaysgame.SimonSaysGameScreen
 import com.example.sequoia.ui.theme.SequoiaTheme
 import dagger.hilt.android.AndroidEntryPoint
@@ -38,6 +39,9 @@ class MainActivity : ComponentActivity() {
 
                 composable(route = Routes.History.route){
                     HistoryScreen(navController = navController)
+                }
+                composable(route = Routes.Settings.route) {
+                    SettingsScreen(navController = navController)
                 }
             }
         }

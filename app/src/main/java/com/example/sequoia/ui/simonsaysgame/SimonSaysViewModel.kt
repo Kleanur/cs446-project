@@ -244,7 +244,4 @@ class SimonSaysViewModel : ViewModel() {
             ViewState()
         )
     }
-
-
-
 }
