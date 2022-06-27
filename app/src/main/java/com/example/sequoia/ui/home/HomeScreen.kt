@@ -139,7 +139,7 @@ fun HomeScreen(mainViewModel: HomeViewModel = viewModel(), navController: NavCon
                 ) {
                     Button(
                         onClick = {
-                            navController.navigate(Routes.Games.route) {
+                            navController.navigate(Routes.History.route) {
                                 popUpTo(Routes.Home.route)
                             }
                         },
