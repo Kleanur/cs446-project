@@ -20,11 +20,13 @@ import androidx.compose.ui.input.pointer.pointerInteropFilter
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.core.content.ContextCompat.getSystemService
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.example.sequoia.R
+import com.example.sequoia.route.Routes
 import com.example.sequoia.ui.simonsaysgame.DrawSimonSaysBoard
 import com.example.sequoia.ui.simonsaysgame.SimonSaysViewModel
 import com.example.sequoia.ui.theme.SequoiaTheme
@@ -57,6 +59,7 @@ fun DrawGotRythmBoard(nc: NavController) {
         c.getSystemService(ComponentActivity.VIBRATOR_SERVICE) as Vibrator
     }
 
+
     ConstraintLayout {
         val (gamebutton, score) = createRefs()
 
@@ -67,6 +70,9 @@ fun DrawGotRythmBoard(nc: NavController) {
                 .constrainAs(score) {
                     top.linkTo(parent.top, margin = 20.dp)
                 }) {
+            Text(
+                text = "Chances: ${viewState.attemptsLeft}"
+            )
             if (!viewState.gameRunning) {
                 Button(onClick = {
                     viewModel.init(vib)
@@ -86,21 +92,42 @@ fun DrawGotRythmBoard(nc: NavController) {
             verticalArrangement = Arrangement.Center,
             modifier = Modifier.constrainAs(gamebutton) {
                 top.linkTo(score.bottom, margin = 150.dp)
-                start.linkTo(parent.start, margin = 200.dp)
-                end.linkTo(parent.end, margin = 200.dp)
+                start.linkTo(parent.start, margin = 0.dp)
+                end.linkTo(parent.end, margin = 0.dp)
             }
         ) {
-            createbutton(viewState.playerTurn)
+            createbutton(viewState.counter, viewState.playerTurn, viewModel, vib, c)
         }
+    }
+
+    if (viewState.attemptsLeft == 0) {
+        AlertDialog(onDismissRequest = {},
+            title = {Text(text = "TEST IS DONE!")},
+            text = {Text("Your Score: ${viewState.score}")},
+            confirmButton = {
+                Button(onClick = { viewModel.reset() }) {
+                    Text("Retry?")
+                }},
+            dismissButton = {
+                Button(onClick = {
+                    nc.navigate(Routes.Games.route) {
+                        popUpTo(Routes.Home.route)
+                    } }) {
+                    Text("Back to game menu")
+                }
+            }
+        )
     }
 }
 
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
-fun createbutton(pt:Boolean) {
+fun createbutton(counter: Int, pt:Boolean, viewModel: GotRythmViewModel, v:Vibrator,c :Context) {
     val button = colorResource(id = R.color.games_txt_green)
     val press = colorResource(id=R.color.button_pressed)
     val color = remember{ mutableStateOf(button)}
+
+
     Button(
         onClick = {}, // blank; overwritten by pointerInteropFilter
         shape = CircleShape,
@@ -112,19 +139,29 @@ fun createbutton(pt:Boolean) {
                     MotionEvent.ACTION_DOWN -> {
                         if (pt) {
                             color.value = press
+                            viewModel.st = System.currentTimeMillis()
+                            v.vibrate(
+                                VibrationEffect.createOneShot(
+                                    viewModel.timecalc(),
+                                    VibrationEffect.DEFAULT_AMPLITUDE
+                                )
+                            )
                         }
                     }
                     MotionEvent.ACTION_UP -> {
                         if (pt) {
                             color.value = button
-                            //viewModel.receiveInput(index)
+                            viewModel.recieveinput(System.currentTimeMillis())
+                            v.cancel()
                         }
                     }
                 }
                 true
             },
         colors = ButtonDefaults.buttonColors(containerColor = color.value)) {
-
+        if (counter > 0) {
+            Text(text = "$counter", fontSize = 50.sp)
+        }
     }
 }
 
