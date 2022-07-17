@@ -2,16 +2,13 @@ package com.example.sequoia.ui.gotrythm
 
 import android.content.Context
 import android.os.*
-import androidx.activity.ComponentActivity
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.State
-import androidx.compose.runtime.currentCompositionLocalContext
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.ui.platform.LocalContext
-import androidx.core.content.ContextCompat.getSystemService
 import androidx.lifecycle.ViewModel
+import kotlinx.coroutines.withContext
 import androidx.lifecycle.viewModelScope
-import com.example.sequoia.ui.simonsaysgame.SimonSaysViewModel
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlin.math.abs
@@ -52,36 +49,39 @@ class GotRythmViewModel() : ViewModel() {
     // initializing the vibration pattern. Vibration pattern starts with off, so add 0 at beginning
     fun init(vib: Vibrator) {
         vibrate = vib
-        println(vibrate)
         viewModelScope.launch {
-            sequence.add(0)
-            sequence.add(Random.nextLong(500, 2000))
-            sequence.add(Random.nextLong(500, 2000))
-            sequence.add(Random.nextLong(500, 2000))
-            val time = timecalc()
-            input.add(0)
-            vib.vibrate(VibrationEffect.createWaveform(sequence.toLongArray(), -1))
-            emit(
-                viewState.value.copy(
-                    gameRunning = true
+            withContext(Dispatchers.Default) {
+                sequence.add(0)
+                sequence.add(Random.nextLong(500, 1500))
+                sequence.add(Random.nextLong(500, 1500))
+                sequence.add(Random.nextLong(500, 1500))
+                val time = timecalc()
+                input.add(0)
+                vib.vibrate(VibrationEffect.createWaveform(sequence.toLongArray(), -1))
+                emit(
+                    viewState.value.copy(
+                        gameRunning = true
+                    )
                 )
-            )
-            delay(time)
-            object : CountDownTimer(4000, 1000) {
-                override fun onTick(p0: Long) {
-                    val old = viewState.value.counter
-                    emit(viewState.value.copy(
-                        counter = old - 1
-                    ))
+                delay(time)
+                for (i in 1..5) {
+                    if (i == 5) {
+                        emit(
+                            viewState.value.copy(
+                                counter = 0,
+                                playerTurn = true
+                            )
+                        )
+                    } else {
+                        emit(
+                            viewState.value.copy(
+                                counter = viewState.value.counter - 1
+                            )
+                        )
+                    }
+                    delay(1000)
                 }
-
-                override fun onFinish() {
-                    emit(viewState.value.copy(
-                        counter = 0,
-                        playerTurn = true
-                    ))
-                }
-            }.start()
+            }
         }
     }
 
@@ -95,69 +95,78 @@ class GotRythmViewModel() : ViewModel() {
 
     fun startround(vib: Vibrator) {
         viewModelScope.launch {
-            emit(viewState.value.copy(
-                playerTurn = false,
-                counter = 5
-            ))
-            sequence.add(Random.nextLong(500, 2000))
-            sequence.add(Random.nextLong(500, 2000))
-            val time = timecalc()
-            vib.vibrate(VibrationEffect.createWaveform(sequence.toLongArray(), -1))
-            delay(time)
-            object : CountDownTimer(4000, 1000) {
-                override fun onTick(p0: Long) {
-                    val old = viewState.value.counter
-                    emit(viewState.value.copy(
-                        counter = old - 1
-                    ))
+            withContext(Dispatchers.Default) {
+                emit(
+                    viewState.value.copy(
+                        playerTurn = false,
+                        counter = 5
+                    )
+                )
+                sequence.add(Random.nextLong(500, 1500))
+                sequence.add(Random.nextLong(500, 1500))
+                input.add(0)
+                val time = timecalc()
+                vib.vibrate(VibrationEffect.createWaveform(sequence.toLongArray(), -1))
+                delay(time)
+                for (i in 1..5) {
+                    if (i == 5) {
+                        emit(
+                            viewState.value.copy(
+                                counter = 0,
+                                playerTurn = true
+                            )
+                        )
+                    } else {
+                        emit(
+                            viewState.value.copy(
+                                counter = viewState.value.counter - 1
+                            )
+                        )
+                    }
+                    delay(1000)
                 }
-
-                override fun onFinish() {
-                    emit(viewState.value.copy(
-                        counter = 0,
-                        playerTurn = true
-                    ))
-                }
-            }.start()
+            }
         }
     }
 
     fun detresult(): Boolean {
         var average:Long = 0
-        for (i in 1 until sequence.size-1) {
+        for (i in 1 until sequence.size) {
             average += ((sequence[i] - abs(sequence[i] - input[i])) *100)/sequence[i]
         }
-        return average/sequence.size >= 60
+        return average/(sequence.size-1) >= 70
     }
 
     fun replaysequence() {
         viewModelScope.launch {
-            emit(viewState.value.copy(
-                playerTurn = false,
-                counter = 5
-            ))
-            val time = timecalc()
-            vibrate.vibrate(VibrationEffect.createWaveform(sequence.toLongArray(), -1))
-            delay(time)
-            object : CountDownTimer(4000, 1000) {
-                override fun onTick(p0: Long) {
-                    val old = viewState.value.counter
-                    emit(
-                        viewState.value.copy(
-                            counter = old - 1
-                        )
+            withContext(Dispatchers.Default) {
+                emit(
+                    viewState.value.copy(
+                        playerTurn = false,
+                        counter = 5
                     )
-                }
-
-                override fun onFinish() {
-                    emit(
-                        viewState.value.copy(
-                            counter = 0,
-                            playerTurn = true
+                )
+                val time = timecalc()
+                vibrate.vibrate(VibrationEffect.createWaveform(sequence.toLongArray(), -1))
+                delay(time)
+                for (i in 1..5) {
+                    if (i == 5) {
+                        emit(
+                            viewState.value.copy(
+                                counter = 0,
+                                playerTurn = true
+                            )
                         )
-                    )
+                    } else {
+                        emit(
+                            viewState.value.copy(
+                                counter = viewState.value.counter - 1
+                            )
+                        )
+                    }
+                    delay(1000)
                 }
-            }.start()
+            }
         }
     }
 
@@ -190,6 +199,7 @@ class GotRythmViewModel() : ViewModel() {
                 )
                 if (viewState.value.attemptsLeft != 0) {
                     input.clear()
+                    input.add(0)
                     replaysequence()
                 } else {
                     // game over

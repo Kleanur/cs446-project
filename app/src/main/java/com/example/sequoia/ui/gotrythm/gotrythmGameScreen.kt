@@ -96,7 +96,7 @@ fun DrawGotRythmBoard(nc: NavController) {
                 end.linkTo(parent.end, margin = 0.dp)
             }
         ) {
-            createbutton(viewState.counter, viewState.playerTurn, viewModel, vib, c)
+            createbutton(viewState.counter, viewState.playerTurn, viewModel, vib)
         }
     }
 
@@ -122,7 +122,7 @@ fun DrawGotRythmBoard(nc: NavController) {
 
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
-fun createbutton(counter: Int, pt:Boolean, viewModel: GotRythmViewModel, v:Vibrator,c :Context) {
+fun createbutton(counter: Int, pt:Boolean, viewModel: GotRythmViewModel, v:Vibrator) {
     val button = colorResource(id = R.color.games_txt_green)
     val press = colorResource(id=R.color.button_pressed)
     val color = remember{ mutableStateOf(button)}
