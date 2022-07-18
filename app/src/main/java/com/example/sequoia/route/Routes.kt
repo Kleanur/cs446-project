@@ -4,6 +4,7 @@ sealed class Routes(val route: String) {
     object Home : Routes("home")
     object Games: Routes("games")
     object History : Routes("history")
-    object  SimonSaysGame: Routes("simonSaysGame")
-    object  Settings: Routes("settings")
+    object SimonSaysGame: Routes("simonSaysGame")
+    object LicketySplitGame: Routes("licketySplitGame")
+    object Settings: Routes("settings")
 }
