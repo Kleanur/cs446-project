@@ -5,15 +5,13 @@ import android.media.MediaPlayer
 import android.os.CountDownTimer
 import android.util.Log
 import androidx.compose.runtime.MutableState
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import com.example.sequoia.BaseViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import java.io.IOException
 import java.io.InputStream
 
-class PitchPerfectViewModel(application: Application) : BaseViewModel(application) {
+class PitchPerfectViewModel constructor(application: Application) : BaseViewModel(application) {
 
     private var mediaPlayer = MediaPlayer()
     private var countDownTimer: CountDownTimer? = null
@@ -23,6 +21,12 @@ class PitchPerfectViewModel(application: Application) : BaseViewModel(applicatio
 
     private val pitchSongsMutableList: MutableList<Song> = mutableListOf()
     private val answerPitchSongsMutableList: MutableList<Song> = mutableListOf()
+
+    private val _answerMutableState: MutableStateFlow<Boolean?> = MutableStateFlow(null)
+    val answerMutableState: StateFlow<Boolean?> = _answerMutableState
+
+    private val _gameRoundMutableState: MutableStateFlow<Int> = MutableStateFlow(1)
+    val gameRoundState: StateFlow<Int> = _gameRoundMutableState
 
     init {
         kotlin.runCatching {
@@ -53,16 +57,20 @@ class PitchPerfectViewModel(application: Application) : BaseViewModel(applicatio
 
     fun chooseAnswerPitchSong(indexNumber: Int): Song? {
         // Randomly choose a song within the list of songs
-        return answerPitchSongsMutableList[indexNumber]
+        return if (answerPitchSongsMutableList.isEmpty().not()) {
+            answerPitchSongsMutableList[indexNumber]
+        } else null
     }
 
     private fun initializeAnswerPitchSongsSet() {
         val newPitchSongsList: MutableList<Song> = pitchSongsMutableList
         newPitchSongsList.remove(randomPitchSong)
-        val randomInt = (0 until newPitchSongsList.size).random()
-        Log.d("PITCH_SCREEN - randomly generated number answer pitch", randomInt.toString())
-        val randomSong = newPitchSongsList[randomInt]
-        answerPitchSongsMutableList.add(randomSong)
+        for (i in 0..gameRoundState.value) {
+            val randomInt = (0 until newPitchSongsList.size).random()
+            Log.d("PITCH_SCREEN - randomly generated number answer pitch", randomInt.toString())
+            val randomSong = newPitchSongsList[randomInt]
+            answerPitchSongsMutableList.add(randomSong)
+        }
         answerPitchSongsMutableList.shuffled()
     }
 
@@ -94,8 +102,8 @@ class PitchPerfectViewModel(application: Application) : BaseViewModel(applicatio
         }
     }
 
-    fun updateSelectedPitchAnswerSong(song: Song?) {
-        selectedAnswerSong = song
+    fun updateSelectedPitchAnswerSong(answer: Song) {
+        _answerMutableState.value = (answer.songName == randomPitchSong?.songName)
     }
 
     fun playRandomSongForTenSeconds(song: Song) {
@@ -152,10 +160,28 @@ class PitchPerfectViewModel(application: Application) : BaseViewModel(applicatio
         return randomPitchSong?.songName == selectedAnswerSong?.songName
     }
 
+    fun stopMediaPlayer(){
+        mediaPlayer.stop()
+    }
+
+    fun resetPlayerAnswer(){
+        _answerMutableState.value = null
+    }
+
+    fun nextRound() {
+        _gameRoundMutableState.value = (gameRoundState.value + 1)
+    }
+
+    data class AnswerState(
+        var song: Song,
+        var checkState: MutableState<Boolean>
+    )
+
     data class Song(
         var songName: String,
         var song: ByteArray,
-        var filePath: String
+        var filePath: String,
+        var isSelected: Boolean = false,
     ) {
         override fun equals(other: Any?): Boolean {
             if (this === other) return true

@@ -6,7 +6,10 @@ import androidx.compose.animation.core.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.*
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
@@ -22,20 +25,20 @@ import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.navigation.NavController
 import com.example.sequoia.R
 import com.example.sequoia.ui.theme.SequoiaTheme
+import kotlin.random.Random
+import kotlin.random.nextInt
 
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun PitchPerfectScreen(
-    pitchPerfectViewModel: PitchPerfectViewModel = PitchPerfectViewModel(application = LocalContext.current.applicationContext as Application),
     navController: NavController
 ) {
     val context = LocalContext.current
-    val checkedStateOne = remember { mutableStateOf(false) }
-    val checkedStateTwo = remember { mutableStateOf(false) }
+    val pitchPerfectViewModel =
+        remember { PitchPerfectViewModel(application = context.applicationContext as Application) }
 
-    var firstAnswer: PitchPerfectViewModel.Song? = null
-    var secondAnswer: PitchPerfectViewModel.Song? = null
+    val gameRound = pitchPerfectViewModel.gameRoundState.collectAsState().value
+    val playerAnswer = pitchPerfectViewModel.answerMutableState.collectAsState().value
 
     SequoiaTheme {
         // A surface container using the 'background' color from the theme
@@ -43,10 +46,10 @@ fun PitchPerfectScreen(
             modifier = Modifier.fillMaxSize(),
             color = MaterialTheme.colorScheme.background
         ) {
+
             ConstraintLayout {
                 // Create references for the composable to constrain
-                val (playBtn, txtTwo, songOne, songTwo, checkOne, checkTwo) = createRefs()
-
+                val (playBtn, txtTwo, musics, checkbox) = createRefs()
 
                 Box(
                     modifier = Modifier
@@ -86,7 +89,6 @@ fun PitchPerfectScreen(
                             textAlign = TextAlign.Start,
                         )
                     }
-//
                 }
                 Row(modifier = Modifier.constrainAs(txtTwo) {
                     top.linkTo(playBtn.bottom, margin = 60.dp)
@@ -102,7 +104,6 @@ fun PitchPerfectScreen(
                     )
                 }
 
-
                 val infiniteTransition = rememberInfiniteTransition()
                 val dy by infiniteTransition.animateFloat(
                     initialValue = 0f,
@@ -114,146 +115,63 @@ fun PitchPerfectScreen(
                 )
 
                 val travelDistance = with(LocalDensity.current) { 30.dp.toPx() }
+                Row(modifier = Modifier.constrainAs(musics) {
+                    top.linkTo(txtTwo.bottom, margin = 80.dp)
+                    centerHorizontallyTo(playBtn)
+                }) {
 
-
-                Button(
-                    onClick = {
-                        pitchPerfectViewModel.chooseAnswerPitchSong(
-                            0
-                        )?.let { song ->
-                            firstAnswer = song
-                            pitchPerfectViewModel.playRandomSongForTenSeconds(song)
-                        }
-                    },
-                    modifier = Modifier.constrainAs(songOne) {
-                        top.linkTo(txtTwo.bottom, margin = 80.dp)
-                        start.linkTo(parent.start, margin = 70.dp)
-                    },
-                    shape = RoundedCornerShape(20),
-                    colors = ButtonDefaults.buttonColors(colorResource(id = R.color.white))
-                ) {
-
-                    Icon(
-                        painter = painterResource(R.drawable.pitchperfect_icon),
-                        modifier = Modifier
-                            .size(40.dp)
-                            .graphicsLayer {
-                                translationY = dy * travelDistance
+                    for (i in 0..gameRound) {
+                        Button(
+                            modifier = Modifier
+                                .width(64.dp)
+                                .height(44.dp)
+                                .padding(4.dp),
+                            onClick = {
+                                pitchPerfectViewModel.chooseAnswerPitchSong(
+                                    Random.nextInt(0 until gameRound)
+                                )?.let { song ->
+                                    pitchPerfectViewModel.playRandomSongForTenSeconds(song)
+                                    pitchPerfectViewModel.updateSelectedPitchAnswerSong(song)
+                                }
                             },
-                        contentDescription = "music button content.",
-                        tint = colorResource(id = R.color.purple_700),
-                    )
-                }
+                            shape = RoundedCornerShape(20),
+                            colors = ButtonDefaults.buttonColors(colorResource(id = R.color.white))
+                        ) {
 
-                Button(
-                    onClick = {
-                        pitchPerfectViewModel.chooseAnswerPitchSong(
-                            1
-                        )?.let { song ->
-                            secondAnswer = song
-                            pitchPerfectViewModel.playRandomSongForTenSeconds(song)
+                            Icon(
+                                painter = painterResource(R.drawable.pitchperfect_icon),
+                                modifier = Modifier
+                                    .fillMaxSize()
+                                    .graphicsLayer {
+                                        translationY = dy * travelDistance
+                                    },
+                                contentDescription = "music button content.",
+                                tint = colorResource(id = R.color.purple_700),
+                            )
                         }
-                    },
-                    modifier = Modifier.constrainAs(songTwo) {
-                        top.linkTo(txtTwo.bottom, margin = 80.dp)
-                        start.linkTo(songOne.end, margin = 50.dp)
-                    },
-                    shape = RoundedCornerShape(20),
-                    colors = ButtonDefaults.buttonColors(colorResource(id = R.color.white))
-                ) {
-
-                    Icon(
-                        painter = painterResource(R.drawable.pitchperfect_icon),
-                        modifier = Modifier.size(40.dp),
-                        contentDescription = "music button content.",
-                        tint = colorResource(id = R.color.purple_700),
-                    )
-                }
-
-                // in below line we are displaying a row
-                // and we are creating a checkbox in a row.
-                Row(modifier = Modifier.constrainAs(checkOne) {
-                    top.linkTo(songOne.bottom, margin = 20.dp)
-                    start.linkTo(songOne.start)
-
-                }) {
-
-                    Checkbox(
-                        // below line we are setting
-                        // the state of checkbox.
-                        checked = checkedStateOne.value,
-                        // below line is use to add padding
-                        // to our checkbox.
-                        modifier = Modifier.padding(16.dp),
-                        // below line is use to add on check
-                        // change to our checkbox.
-                        onCheckedChange = {
-                            if (it) {
-                                checkedStateTwo.value = false
-                                pitchPerfectViewModel.updateSelectedPitchAnswerSong(firstAnswer)
-                                if (pitchPerfectViewModel.verifyAnswer()) {
-                                    Toast.makeText(
-                                        context,
-                                        "YAY! You won the game!",
-                                        Toast.LENGTH_LONG
-                                    ).show()
-                                    // Show the true results - Give score or go to next round
-                                } else {
-                                    Toast.makeText(
-                                        context,
-                                        "FUCK YOU! You lost the game!",
-                                        Toast.LENGTH_LONG
-                                    ).show()
-                                    // Show a dialog box that says answer is wrong. Try again and reset everything here.
-                                }
-                            }
-                            checkedStateOne.value = it
-                        },
-                    )
-
-                }
-
-                Row(modifier = Modifier.constrainAs(checkTwo) {
-                    top.linkTo(songTwo.bottom, margin = 20.dp)
-                    start.linkTo(songTwo.start)
-
-                }) {
-
-                    Checkbox(
-                        // below line we are setting
-                        // the state of checkbox.
-                        checked = checkedStateTwo.value,
-                        // below line is use to add padding
-                        // to our checkbox.
-                        modifier = Modifier.padding(16.dp),
-                        // below line is use to add on check
-                        // change to our checkbox.
-                        onCheckedChange = {
-                            if (it) {
-                                checkedStateOne.value = false
-                                pitchPerfectViewModel.updateSelectedPitchAnswerSong(secondAnswer)
-                                if (pitchPerfectViewModel.verifyAnswer()) {
-                                    Toast.makeText(
-                                        context,
-                                        "YAY! You won the game!",
-                                        Toast.LENGTH_LONG
-                                    ).show()
-                                    // Show the true results - Give score or go to next round
-                                } else {
-                                    Toast.makeText(
-                                        context,
-                                        "You lost the game!",
-                                        Toast.LENGTH_LONG
-                                    ).show()
-                                    // Show a dialog box that says answer is wrong. Try again and reset everything here.
-                                }
-                            }
-                            checkedStateTwo.value = it
-                        },
-                    )
-
+                    }
                 }
             }
+        }
+        when (playerAnswer) {
+            true -> {
+                pitchPerfectViewModel.resetPlayerAnswer()
+                pitchPerfectViewModel.nextRound()
+//                pitchPerfectViewModel.stopMediaPlayer()
+                Toast.makeText(
+                    context,
+                    "YAY! You won the game!",
+                    Toast.LENGTH_LONG
+                ).show()
+            }
+            false -> {
+                Toast.makeText(
+                    context,
+                    "You lost the game!",
+                    Toast.LENGTH_LONG
+                ).show()
+            }
+            null -> {}
         }
     }
 }
