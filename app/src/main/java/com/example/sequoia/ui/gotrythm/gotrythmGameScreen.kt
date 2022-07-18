@@ -140,6 +140,8 @@ fun createbutton(counter: Int, pt:Boolean, viewModel: GotRythmViewModel, v:Vibra
                         if (pt) {
                             color.value = press
                             viewModel.st = System.currentTimeMillis()
+                            // testing purpose
+                            println("vibrating")
                             v.vibrate(
                                 VibrationEffect.createOneShot(
                                     viewModel.timecalc(),
@@ -151,6 +153,8 @@ fun createbutton(counter: Int, pt:Boolean, viewModel: GotRythmViewModel, v:Vibra
                     MotionEvent.ACTION_UP -> {
                         if (pt) {
                             color.value = button
+                            //testing purpose
+                            println("stopped")
                             viewModel.recieveinput(System.currentTimeMillis())
                             v.cancel()
                         }

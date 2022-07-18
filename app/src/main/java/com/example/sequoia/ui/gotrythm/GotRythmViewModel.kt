@@ -58,12 +58,30 @@ class GotRythmViewModel() : ViewModel() {
                 val time = timecalc()
                 input.add(0)
                 vib.vibrate(VibrationEffect.createWaveform(sequence.toLongArray(), -1))
+
+
                 emit(
                     viewState.value.copy(
                         gameRunning = true
                     )
                 )
-                delay(time)
+
+                // test purpose button color change
+                // to make this code work, please comment out delay(time)
+                var timing = 0
+                for (t in 1 until sequence.size) {
+                    if (timing == 0) {
+                        println("vibrating")
+                        timing = 1
+                    } else {
+                        println("stopped")
+                        timing = 0
+                    }
+                    delay(sequence[t])
+                }
+
+                TODO@
+                //delay(time)
                 for (i in 1..5) {
                     if (i == 5) {
                         emit(
@@ -107,7 +125,23 @@ class GotRythmViewModel() : ViewModel() {
                 input.add(0)
                 val time = timecalc()
                 vib.vibrate(VibrationEffect.createWaveform(sequence.toLongArray(), -1))
-                delay(time)
+
+                // test purpose button color change
+                // to make this code work, please comment out delay(time)
+                var timing = 0
+                for (t in 1 until sequence.size) {
+                    if (timing == 0) {
+                        println("vibrating")
+                        timing = 1
+                    } else {
+                        println("stopped")
+                        timing = 0
+                    }
+                    delay(sequence[t])
+                }
+
+                TODO@
+            //delay(time)
                 for (i in 1..5) {
                     if (i == 5) {
                         emit(
