@@ -68,7 +68,7 @@ class GotRythmViewModel() : ViewModel() {
 
                 // test purpose button color change
                 // to make this code work, please comment out delay(time)
-                var timing = 0
+                /*var timing = 0
                 for (t in 1 until sequence.size) {
                     if (timing == 0) {
                         println("vibrating")
@@ -78,10 +78,9 @@ class GotRythmViewModel() : ViewModel() {
                         timing = 0
                     }
                     delay(sequence[t])
-                }
+                }*/
 
-                TODO@
-                //delay(time)
+                delay(time)
                 for (i in 1..5) {
                     if (i == 5) {
                         emit(
@@ -128,7 +127,7 @@ class GotRythmViewModel() : ViewModel() {
 
                 // test purpose button color change
                 // to make this code work, please comment out delay(time)
-                var timing = 0
+                /*var timing = 0
                 for (t in 1 until sequence.size) {
                     if (timing == 0) {
                         println("vibrating")
@@ -138,10 +137,8 @@ class GotRythmViewModel() : ViewModel() {
                         timing = 0
                     }
                     delay(sequence[t])
-                }
-
-                TODO@
-            //delay(time)
+                }*/
+                delay(time)
                 for (i in 1..5) {
                     if (i == 5) {
                         emit(
