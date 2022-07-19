@@ -19,6 +19,7 @@ import com.example.sequoia.route.Routes
 import com.example.sequoia.ui.theme.SequoiaTheme
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.isActive
+import kotlin.math.log10
 
 val BOLT_SIZE = 50.dp
 
@@ -48,7 +49,7 @@ fun DrawGameScreen(nc : NavController) {
 
     LaunchedEffect(key1 = Unit) {
         while (isActive) {
-            // 25 fps
+            // 25 ticks/second
             delay(40L)
             viewModel.gameTick()
         }
@@ -90,26 +91,27 @@ fun DrawGameScreen(nc : NavController) {
                     end.linkTo(parent.end, margin = 0.dp)
                 }
         ) {
-            // TODO: put this in for loop with bricks
-            IconButton (
-                onClick = { viewModel.clickBolt(0) /* TODO - unique ids */ },
-                modifier = Modifier
-                    .offset(
-                        x = calculateXOffset(0.0f, canvasWidth),
-                        y = calculateYOffset(0.0f, canvasHeight)
-                    ).size(BOLT_SIZE)
-            ) {
-                Icon(
-                    painter = painterResource(id = R.drawable.lightning),
-                    contentDescription = "Play button content description.",
-                    tint = Color.Unspecified,
-                    // TODO - animate icon size to scale with time remaining
-                )
+            for (bolt in viewState.bolts) {
+                IconButton (
+                    onClick = { viewModel.clickBolt(bolt.id) },
+                    modifier = Modifier
+                        .offset(
+                            x = calculateXOffset(bolt.x, canvasWidth),
+                            y = calculateYOffset(bolt.y, canvasHeight)
+                        ).size(BOLT_SIZE)
+                ) {
+                    Icon(
+                        painter = painterResource(id = R.drawable.lightning),
+                        contentDescription = "Play button content description.",
+                        tint = Color.Unspecified,
+                        modifier = Modifier.size(min(BOLT_SIZE, (29 * log10(bolt.ticks.toDouble())).dp))
+                    )
+                }
             }
         }
     }
 
-    if (viewState.attemptsLeft == 0) {
+    if (viewState.attemptsLeft <= 0) {
         AlertDialog(onDismissRequest = {},
             title = { Text(text = "GAME OVER") },
             text = { Text("Your Score: ${viewState.score}") },
