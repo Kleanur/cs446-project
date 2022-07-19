@@ -4,12 +4,13 @@ import android.app.Application
 import android.media.MediaPlayer
 import android.os.CountDownTimer
 import android.util.Log
-import androidx.compose.runtime.MutableState
 import com.example.sequoia.BaseViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import java.io.IOException
 import java.io.InputStream
+import kotlin.random.Random
+import kotlin.random.nextInt
 
 class PitchPerfectViewModel constructor(application: Application) : BaseViewModel(application) {
 
@@ -17,16 +18,40 @@ class PitchPerfectViewModel constructor(application: Application) : BaseViewMode
     private var countDownTimer: CountDownTimer? = null
 
     private var randomPitchSong: Song? = null
-    private var selectedAnswerSong: Song? = null
 
+    // list of all the songs used in pitch game
     private val pitchSongsMutableList: MutableList<Song> = mutableListOf()
+
+    // list of all the answer songs used in pitch game
     private val answerPitchSongsMutableList: MutableList<Song> = mutableListOf()
+
+    // list of all the already picked answer songs
+    private val alreadyPickedAnswerPitchSongsMutableLIst: MutableList<Song?> = mutableListOf()
 
     private val _answerMutableState: MutableStateFlow<Boolean?> = MutableStateFlow(null)
     val answerMutableState: StateFlow<Boolean?> = _answerMutableState
 
+    private val _selectedSongMutableState: MutableStateFlow<Song?> = MutableStateFlow(null)
+    val selectedSongMutableState: StateFlow<Song?> = _selectedSongMutableState
+
     private val _gameRoundMutableState: MutableStateFlow<Int> = MutableStateFlow(1)
     val gameRoundState: StateFlow<Int> = _gameRoundMutableState
+
+    private val _randomlyGeneratedIndexes:
+            MutableStateFlow<MutableList<Int>> =
+        MutableStateFlow(mutableListOf())
+    val randomlyGeneratedIndexes: StateFlow<MutableList<Int>> = _randomlyGeneratedIndexes
+
+    private val _playerAttemptMutableState: MutableStateFlow<Int> = MutableStateFlow(2)
+    val playerAttemptState: StateFlow<Int> = _playerAttemptMutableState
+
+    private val _scoreMutableState: MutableStateFlow<Int> = MutableStateFlow(0)
+    val scoreState: StateFlow<Int> = _scoreMutableState
+
+    private val alreadyPickedRandomNumber: MutableList<Int> = mutableListOf()
+
+    private val _animateMelodyIcon: MutableStateFlow<Float?> = MutableStateFlow(null)
+    val animateMelodyIcon: StateFlow<Float?> = _animateMelodyIcon
 
     init {
         kotlin.runCatching {
@@ -41,6 +66,8 @@ class PitchPerfectViewModel constructor(application: Application) : BaseViewMode
     }
 
     fun choosePitchRandomSong(): Song? {
+        // clear generated random number list
+        alreadyPickedRandomNumber.clear()
         // clear the list of answer songs
         answerPitchSongsMutableList.clear()
         // Randomly choose a song within the list of songs
@@ -51,7 +78,8 @@ class PitchPerfectViewModel constructor(application: Application) : BaseViewMode
         randomPitchSong?.let { song ->
             answerPitchSongsMutableList.add(song)
         }
-        initializeAnswerPitchSongsSet()
+        // add the remaining songs to the answer list
+        populateAnswerPitchSongsList()
         return randomPitchSong
     }
 
@@ -62,14 +90,32 @@ class PitchPerfectViewModel constructor(application: Application) : BaseViewMode
         } else null
     }
 
-    private fun initializeAnswerPitchSongsSet() {
+    fun populateRandomlyGeneratedMutableStateList() {
+        _randomlyGeneratedIndexes.value.add(generateUniqueRandomNumber(gameRoundState.value))
+    }
+
+    private fun generateUniqueRandomNumber(upperBound: Int): Int {
+        val randomNumber = Random.nextInt(0..upperBound)
+        return if (alreadyPickedRandomNumber.contains(randomNumber).not()) {
+            randomNumber
+        } else {
+            generateUniqueRandomNumber(upperBound)
+        }
+    }
+
+    private fun populateAnswerPitchSongsList() {
         val newPitchSongsList: MutableList<Song> = pitchSongsMutableList
-        newPitchSongsList.remove(randomPitchSong)
-        for (i in 0..gameRoundState.value) {
-            val randomInt = (0 until newPitchSongsList.size).random()
-            Log.d("PITCH_SCREEN - randomly generated number answer pitch", randomInt.toString())
-            val randomSong = newPitchSongsList[randomInt]
-            answerPitchSongsMutableList.add(randomSong)
+        if (newPitchSongsList.remove(randomPitchSong)) {
+            //Toccata-and-Fugue-in-D-minor-BWV-565-[AudioTrimmer.com].mp3
+            for (i in 0 until gameRoundState.value) {
+                val randomInt = (0 until newPitchSongsList.size).random()
+                Log.d(
+                    "PITCH_SCREEN - randomly generated number answer pitch",
+                    randomInt.toString()
+                )
+                val randomSong = newPitchSongsList[randomInt]
+                answerPitchSongsMutableList.add(randomSong)
+            }
         }
         answerPitchSongsMutableList.shuffled()
     }
@@ -103,7 +149,7 @@ class PitchPerfectViewModel constructor(application: Application) : BaseViewMode
     }
 
     fun updateSelectedPitchAnswerSong(answer: Song) {
-        _answerMutableState.value = (answer.songName == randomPitchSong?.songName)
+        _selectedSongMutableState.value = answer
     }
 
     fun playRandomSongForTenSeconds(song: Song) {
@@ -156,26 +202,46 @@ class PitchPerfectViewModel constructor(application: Application) : BaseViewMode
         countDownTimer?.start()
     }
 
-    fun verifyAnswer(): Boolean {
-        return randomPitchSong?.songName == selectedAnswerSong?.songName
+    fun verifyAnswer() {
+        _answerMutableState.value =
+            (_selectedSongMutableState.value?.songName == randomPitchSong?.songName)
+        stopMediaPlayer()
     }
 
-    fun stopMediaPlayer(){
+    private fun stopMediaPlayer() {
         mediaPlayer.stop()
     }
 
-    fun resetPlayerAnswer(){
+    fun resetPlayerAnswer() {
         _answerMutableState.value = null
     }
 
+    fun animateMelodyIcon(animationParameters: Float?) {
+        _animateMelodyIcon.value = animationParameters
+    }
+
     fun nextRound() {
+        answerPitchSongsMutableList.clear()
+        randomPitchSong = null
         _gameRoundMutableState.value = (gameRoundState.value + 1)
     }
 
-    data class AnswerState(
-        var song: Song,
-        var checkState: MutableState<Boolean>
-    )
+    fun addScore() {
+
+        _scoreMutableState.value = (scoreState.value + 1)
+    }
+
+    fun loseAttempt() {
+        _playerAttemptMutableState.value = (playerAttemptState.value - 1)
+    }
+
+    fun resetGame() {
+        _playerAttemptMutableState.value = 2
+        _gameRoundMutableState.value = 1
+        _answerMutableState.value = null
+        randomPitchSong = null
+    }
+
 
     data class Song(
         var songName: String,
@@ -202,3 +268,4 @@ class PitchPerfectViewModel constructor(application: Application) : BaseViewMode
         }
     }
 }
+
