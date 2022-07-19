@@ -1,5 +1,6 @@
 package com.example.sequoia
 
+
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -11,6 +12,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.sequoia.route.Routes
 import com.example.sequoia.ui.game.GamesScreen
+import com.example.sequoia.ui.gotrythm.gotrythmGameScreen
 import com.example.sequoia.ui.home.HomeScreen
 import com.example.sequoia.ui.history.HistoryScreen
 import com.example.sequoia.ui.pitchperfectgame.PitchPerfectScreen
@@ -48,6 +50,10 @@ class MainActivity : ComponentActivity() {
                 }
                 composable(route = Routes.Settings.route) {
                     SettingsScreen(navController = navController)
+                }
+
+                composable(route = Routes.GotRythmGame.route) {
+                    gotrythmGameScreen(nc = navController)
                 }
                 composable(route = Routes.PitchPerfectGame.route) {
                     PitchPerfectScreen(navController = navController)
