@@ -13,6 +13,7 @@ import com.example.sequoia.route.Routes
 import com.example.sequoia.ui.game.GamesScreen
 import com.example.sequoia.ui.home.HomeScreen
 import com.example.sequoia.ui.history.HistoryScreen
+import com.example.sequoia.ui.pitchperfectgame.PitchPerfectScreen
 import com.example.sequoia.ui.licketysplitgame.LicketySplitGameScreen
 import com.example.sequoia.ui.settings.SettingsScreen
 import com.example.sequoia.ui.simonsaysgame.SimonSaysGameScreen
@@ -47,6 +48,9 @@ class MainActivity : ComponentActivity() {
                 }
                 composable(route = Routes.Settings.route) {
                     SettingsScreen(navController = navController)
+                }
+                composable(route = Routes.PitchPerfectGame.route) {
+                    PitchPerfectScreen(navController = navController)
                 }
             }
         }
