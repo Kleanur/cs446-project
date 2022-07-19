@@ -42,7 +42,7 @@ class PitchPerfectViewModel constructor(application: Application) : BaseViewMode
         MutableStateFlow(mutableListOf())
     val randomlyGeneratedIndexes: StateFlow<MutableList<Int>> = _randomlyGeneratedIndexes
 
-    private val _playerAttemptMutableState: MutableStateFlow<Int> = MutableStateFlow(2)
+    private val _playerAttemptMutableState: MutableStateFlow<Int> = MutableStateFlow(3)
     val playerAttemptState: StateFlow<Int> = _playerAttemptMutableState
 
     private val _scoreMutableState: MutableStateFlow<Int> = MutableStateFlow(0)
@@ -236,10 +236,12 @@ class PitchPerfectViewModel constructor(application: Application) : BaseViewMode
     }
 
     fun resetGame() {
-        _playerAttemptMutableState.value = 2
+        _playerAttemptMutableState.value = 3
         _gameRoundMutableState.value = 1
         _answerMutableState.value = null
         randomPitchSong = null
+        _scoreMutableState.value = 0
+        
     }
 
 

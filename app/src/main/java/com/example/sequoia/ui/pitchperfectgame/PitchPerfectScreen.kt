@@ -21,6 +21,7 @@ import androidx.compose.ui.unit.sp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.navigation.NavController
 import com.example.sequoia.R
+import com.example.sequoia.route.Routes
 import com.example.sequoia.ui.theme.SequoiaTheme
 import kotlin.random.Random
 import kotlin.random.nextInt
@@ -42,7 +43,7 @@ fun PitchPerfectScreen(
 
     val iconColor = remember { mutableStateOf(R.color.purple_700) }
 
-    var playerAttempt = 2
+
 
     SequoiaTheme {
         // A surface container using the 'background' color from the theme
@@ -53,15 +54,29 @@ fun PitchPerfectScreen(
 
             ConstraintLayout {
                 // Create references for the composable to constrain
-                val (playBtn, txtTwo, musics, verifBtn, scoreTxt) = createRefs()
+                val (playBtn, txtTwo, musics, verifBtn, scoreTxt, chanceTxt) = createRefs()
 
                 Row(modifier = Modifier.constrainAs(scoreTxt) {
+                    top.linkTo(parent.top, margin = 8.dp)
+                    end.linkTo(parent.end, margin = 8.dp)
+
+                }) {
+                    Text(
+                        text = "Scores: ${pitchPerfectViewModel.scoreState.collectAsState().value}",
+                        fontSize = 15.sp,
+                        fontWeight = FontWeight.Bold,
+                        color = colorResource(R.color.game_button_background_dark_green),
+                        textAlign = TextAlign.Start,
+                    )
+                }
+
+                Row(modifier = Modifier.constrainAs(chanceTxt) {
                     top.linkTo(parent.top, margin = 8.dp)
                     start.linkTo(parent.start, margin = 8.dp)
 
                 }) {
                     Text(
-                        text = "score: ${pitchPerfectViewModel.scoreState.collectAsState().value}",
+                        text = "Chances: ${pitchPerfectViewModel.playerAttemptState.collectAsState().value}",
                         fontSize = 15.sp,
                         fontWeight = FontWeight.Bold,
                         color = colorResource(R.color.game_button_background_dark_green),
@@ -115,7 +130,7 @@ fun PitchPerfectScreen(
 
                 }) {
                     Text(
-                        text = "Check the correct song",
+                        text = "Pick the correct song",
                         fontSize = 30.sp,
                         fontWeight = FontWeight.Bold,
                         color = colorResource(R.color.game_button_background_dark_green),
@@ -185,6 +200,23 @@ fun PitchPerfectScreen(
                     )
                 }
 
+                if (pitchPerfectViewModel.playerAttemptState.collectAsState().value== 0) {
+                    AlertDialog(onDismissRequest = {},
+                        title = {Text(text = "GAME OVER")},
+                        text = {Text("Your Score: ${pitchPerfectViewModel.scoreState.collectAsState().value}")},
+                        confirmButton = {
+                            Button(onClick = { pitchPerfectViewModel.resetGame() }) {
+                                Text("Retry?")
+                            }},
+                        dismissButton = {
+                            Button(onClick = {
+                                navController.navigate(Routes.Games.route) }) {
+                                Text("Back to game menu")
+                            }
+                        }
+                    )
+                }
+
             }
             when (playerAnswer) {
                 true -> {
@@ -192,27 +224,18 @@ fun PitchPerfectScreen(
                     pitchPerfectViewModel.nextRound()
                     Toast.makeText(
                         context,
-                        "YAY! You won the game!",
+                        "YAY! Correct!",
                         Toast.LENGTH_SHORT
                     ).show()
                     pitchPerfectViewModel.addScore()
                 }
                 false -> {
-                    if (playerAttempt == 0) {
-                        Toast.makeText(
-                            context,
-                            "Game Over",
-                            Toast.LENGTH_SHORT
-                        ).show()
-                        pitchPerfectViewModel.resetGame()
-                        return@Surface
-                    }
+
                     pitchPerfectViewModel.resetPlayerAnswer()
                     pitchPerfectViewModel.loseAttempt()
-                    playerAttempt--
                     Toast.makeText(
                         context,
-                        "Wrong Answer. Remaining attempts: $playerAttempt",
+                        "Wrong Answer!",
                         Toast.LENGTH_SHORT
                     ).show()
 
