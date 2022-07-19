@@ -13,6 +13,7 @@ import com.example.sequoia.route.Routes
 import com.example.sequoia.ui.game.GamesScreen
 import com.example.sequoia.ui.home.HomeScreen
 import com.example.sequoia.ui.history.HistoryScreen
+import com.example.sequoia.ui.licketysplitgame.LicketySplitGameScreen
 import com.example.sequoia.ui.settings.SettingsScreen
 import com.example.sequoia.ui.simonsaysgame.SimonSaysGameScreen
 import com.example.sequoia.ui.theme.SequoiaTheme
@@ -35,6 +36,10 @@ class MainActivity : ComponentActivity() {
 
                 composable(route = Routes.SimonSaysGame.route) {
                     SimonSaysGameScreen(nc = navController)
+                }
+
+                composable(route = Routes.LicketySplitGame.route) {
+                    LicketySplitGameScreen(nc = navController)
                 }
 
                 composable(route = Routes.History.route){
