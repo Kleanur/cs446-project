@@ -1,8 +1,7 @@
-<?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <int name= "gameId.None"> 0 </int>
-    <int name= "gameId.SimonSays"> 1 </int>
-    <int name= "gameId.PitchPerfect"> 2 </int>
-    <int name= "gameId.GotRhythm"> 3 </int>
-    <int name= "gameId.LicketySplit"> 4 </int>
+    <integer name="gameId.None"> 0 </integer>
+    <integer name="gameId.SimonSays"> 1 </integer>
+    <integer name="gameId.PitchPerfect"> 2 </integer>
+    <integer name="gameId.GotRhythm"> 3 </integer>
+    <integer name="gameId.LicketySplit"> 4 </integer>
 </resources>
