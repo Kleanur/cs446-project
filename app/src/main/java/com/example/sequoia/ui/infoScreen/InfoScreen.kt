@@ -20,6 +20,9 @@ import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
 import androidx.navigation.NavController
 import com.example.sequoia.R
+import com.example.sequoia.ui.theme.InfoButtonColor
+import com.example.sequoia.ui.theme.InfoScreenBackgroundColor
+import com.example.sequoia.ui.theme.InfoScreenTextColor
 import com.example.sequoia.ui.theme.SequoiaTheme
 
 @Composable
@@ -35,7 +38,7 @@ fun InfoScreen(navController: NavController) {
                     .fillMaxSize()
                     .padding(16.dp)
                     .clip(RoundedCornerShape(20.dp))
-                    .background(colorResource(id = R.color.setting_button_background_light_purple))
+                    .background(InfoScreenBackgroundColor)
             ) {
                 ConstraintLayout {
                     val (
@@ -47,7 +50,7 @@ fun InfoScreen(navController: NavController) {
                     ) = createRefs()
                     Text(
                         text = "About Us", fontSize = 32.sp, fontWeight = FontWeight.Bold,
-                        color = colorResource(R.color.setting_button_dark_purple),
+                        color = InfoScreenTextColor,
                         modifier = Modifier.constrainAs(titleHeader) {
                             top.linkTo(parent.top, margin = 30.dp)
                             width = Dimension.matchParent
@@ -59,7 +62,7 @@ fun InfoScreen(navController: NavController) {
                         text = "Brain training games may help older adults with hearing loss",
                         fontSize = 20.sp,
                         fontWeight = FontWeight.Bold,
-                        color = colorResource(R.color.setting_button_dark_purple),
+                        color = InfoScreenTextColor,
                         modifier = Modifier.constrainAs(header1) {
                             top.linkTo(titleHeader.bottom, margin = 20.dp)
                             start.linkTo(parent.start, margin = 8.dp)
@@ -72,7 +75,7 @@ fun InfoScreen(navController: NavController) {
                     Text(
                         text = "A small experiment suggests that hearing-impaired adults who play computer games that are designed for audio skill improvement may understand conversations in a noisy room easier.",
                         fontSize = 16.sp,
-                        color = colorResource(R.color.setting_button_dark_purple),
+                        color = InfoScreenTextColor,
                         modifier = Modifier.constrainAs(desc1) {
                             top.linkTo(header1.bottom, margin = 8.dp)
                             start.linkTo(parent.start, margin = 8.dp)
@@ -86,7 +89,7 @@ fun InfoScreen(navController: NavController) {
                         text = "Brain Training Game Improves Executive Functions and Processing Speed in the Elderly",
                         fontSize = 20.sp,
                         fontWeight = FontWeight.Bold,
-                        color = colorResource(R.color.setting_button_dark_purple),
+                        color = InfoScreenTextColor,
                         modifier = Modifier.constrainAs(header2) {
                             top.linkTo(desc1.bottom, margin = 16.dp)
                             start.linkTo(parent.start, margin = 8.dp)
@@ -99,7 +102,7 @@ fun InfoScreen(navController: NavController) {
                     Text(
                         text = "There was an experiment that showed the elderly people's improvement in executive functions and processing speeds even within the short term training, which is conducted by playing brain training game.",
                         fontSize = 16.sp,
-                        color = colorResource(R.color.setting_button_dark_purple),
+                        color = InfoScreenTextColor,
                         modifier = Modifier.constrainAs(desc2) {
                             top.linkTo(header2.bottom, margin = 8.dp)
                             start.linkTo(parent.start, margin = 8.dp)

@@ -22,6 +22,9 @@ import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.navigation.NavController
 import com.example.sequoia.R
 import com.example.sequoia.route.Routes
+import com.example.sequoia.ui.theme.PitchPerfectBackgroundColor
+import com.example.sequoia.ui.theme.PitchPerfectButtonColor
+import com.example.sequoia.ui.theme.PitchPerfectIconColor
 import com.example.sequoia.ui.theme.SequoiaTheme
 import kotlin.random.Random
 import kotlin.random.nextInt
@@ -41,15 +44,11 @@ fun PitchPerfectScreen(
     val randomlyGeneratedIndexes =
         pitchPerfectViewModel.randomlyGeneratedIndexes.collectAsState().value
 
-    val iconColor = remember { mutableStateOf(R.color.purple_700) }
-
-
-
     SequoiaTheme {
         // A surface container using the 'background' color from the theme
         Surface(
             modifier = Modifier.fillMaxSize(),
-            color = MaterialTheme.colorScheme.background
+            color = PitchPerfectBackgroundColor
         ) {
 
             ConstraintLayout {
@@ -63,9 +62,9 @@ fun PitchPerfectScreen(
                 }) {
                     Text(
                         text = "Scores: ${pitchPerfectViewModel.scoreState.collectAsState().value}",
-                        fontSize = 15.sp,
+                        fontSize = 20.sp,
                         fontWeight = FontWeight.Bold,
-                        color = colorResource(R.color.game_button_background_dark_green),
+                        color = Color.Black,
                         textAlign = TextAlign.Start,
                     )
                 }
@@ -77,9 +76,9 @@ fun PitchPerfectScreen(
                 }) {
                     Text(
                         text = "Chances: ${pitchPerfectViewModel.playerAttemptState.collectAsState().value}",
-                        fontSize = 15.sp,
+                        fontSize = 20.sp,
                         fontWeight = FontWeight.Bold,
-                        color = colorResource(R.color.game_button_background_dark_green),
+                        color = Color.Black,
                         textAlign = TextAlign.Start,
                     )
                 }
@@ -104,7 +103,7 @@ fun PitchPerfectScreen(
                         },
                         Modifier.fillMaxSize(),
                         shape = RoundedCornerShape(20),
-                        colors = ButtonDefaults.buttonColors(colorResource(id = R.color.history_button_dark_blue))
+                        colors = ButtonDefaults.buttonColors(PitchPerfectButtonColor)
                     ) {
 
                         Icon(
@@ -133,7 +132,7 @@ fun PitchPerfectScreen(
                         text = "Pick the correct song",
                         fontSize = 30.sp,
                         fontWeight = FontWeight.Bold,
-                        color = colorResource(R.color.game_button_background_dark_green),
+                        color = Color.Black,
                         textAlign = TextAlign.Start,
                     )
                 }
@@ -161,7 +160,7 @@ fun PitchPerfectScreen(
                             Icon(
                                 painter = painterResource(R.drawable.pitchperfect_icon),
                                 contentDescription = "music button content.",
-                                tint = colorResource(id = iconColor.value),
+                                tint = PitchPerfectIconColor,
                                 modifier = Modifier
                                     .fillMaxSize(),
                             )
@@ -185,7 +184,7 @@ fun PitchPerfectScreen(
                         },
                         Modifier.fillMaxSize(),
                         shape = RoundedCornerShape(20),
-                        colors = ButtonDefaults.buttonColors(colorResource(id = R.color.game_button_background_dark_green))
+                        colors = ButtonDefaults.buttonColors(PitchPerfectButtonColor)
                     ) {
 
                     }
@@ -202,7 +201,7 @@ fun PitchPerfectScreen(
 
                 if (pitchPerfectViewModel.playerAttemptState.collectAsState().value== 0) {
                     AlertDialog(onDismissRequest = {},
-                        title = {Text(text = "GAME OVER")},
+                        title = {Text(text = "Game Completed")},
                         text = {Text("Your Score: ${pitchPerfectViewModel.scoreState.collectAsState().value}")},
                         confirmButton = {
                             Button(onClick = { pitchPerfectViewModel.resetGame() }) {

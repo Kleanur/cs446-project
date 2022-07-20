@@ -11,11 +11,14 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.min
+import androidx.compose.ui.unit.sp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.example.sequoia.R
 import com.example.sequoia.route.Routes
+import com.example.sequoia.ui.theme.LicketySplitBackgroundColor
+import com.example.sequoia.ui.theme.LicketySplitBoltColor
 import com.example.sequoia.ui.theme.SequoiaTheme
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.isActive
@@ -28,7 +31,7 @@ fun LicketySplitGameScreen(nc : NavController) {
     SequoiaTheme {
         Surface(
             modifier = Modifier.fillMaxSize(),
-            color = MaterialTheme.colorScheme.background
+            color = LicketySplitBackgroundColor
         ) {
             DrawGameScreen(nc)
         }
@@ -66,17 +69,20 @@ fun DrawGameScreen(nc : NavController) {
                     top.linkTo(parent.top, margin = 20.dp)
                 }) {
             Text(
-                text = "Chances: ${viewState.attemptsLeft}"
+                text = "Chances: ${viewState.attemptsLeft}",
+                fontSize = 20.sp
             )
             if (!viewState.gameRunning) {
                 Button(onClick ={ viewModel.startGame() } ) {
                     Text(
-                        text = "Start"
+                        text = "Start",
+                        fontSize = 20.sp
                     )
                 }
             }
             Text(
-                text = "Scores: ${viewState.score}"
+                text = "Scores: ${viewState.score}",
+                fontSize = 20.sp
             )
 
         }
@@ -103,7 +109,7 @@ fun DrawGameScreen(nc : NavController) {
                     Icon(
                         painter = painterResource(id = R.drawable.lightning),
                         contentDescription = "Play button content description.",
-                        tint = Color.Unspecified,
+                        tint = LicketySplitBoltColor,
                         modifier = Modifier.size(min(BOLT_SIZE, (29 * log10(bolt.ticks.toDouble())).dp))
                     )
                 }
@@ -113,7 +119,7 @@ fun DrawGameScreen(nc : NavController) {
 
     if (viewState.attemptsLeft <= 0) {
         AlertDialog(onDismissRequest = {},
-            title = { Text(text = "GAME OVER") },
+            title = { Text(text = "Game Completed") },
             text = { Text("Your Score: ${viewState.score}") },
             confirmButton = {
                 Button(onClick = { viewModel.reset() }) {
