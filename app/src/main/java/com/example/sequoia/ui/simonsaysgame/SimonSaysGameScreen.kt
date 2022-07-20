@@ -15,6 +15,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.input.pointer.pointerInteropFilter
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.semantics.SemanticsProperties.Text
 import androidx.compose.ui.unit.dp
@@ -24,6 +25,8 @@ import androidx.navigation.NavController
 import com.example.sequoia.R
 import com.example.sequoia.route.Routes
 import com.example.sequoia.ui.theme.SequoiaTheme
+import com.example.sequoia.ui.repository.ScoreImpl
+import com.example.sequoia.ui.theme.gameIds
 
 @Composable
 fun SimonSaysGameScreen(nc :NavController) {
@@ -111,6 +114,11 @@ fun DrawSimonSaysBoard(nc : NavController) {
                 }
             }
         )
+        val scoreObj = ScoreImpl()
+        gameIds["SimonSays"]?.let {
+            scoreObj.addScore(gameId = it,
+                gameScore = viewState.score, context = LocalContext.current)
+        }
     }
 }
 
