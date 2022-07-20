@@ -24,7 +24,7 @@ import com.example.sequoia.R
 import com.example.sequoia.ui.theme.SequoiaTheme
 
 @Composable
-fun GamesScreen(mainViewModel: GameViewModel = viewModel(), navController: NavController) {
+fun GamesScreen(gameViewModel: GameViewModel = viewModel(), navController: NavController) {
     SequoiaTheme() {
         Surface(
             modifier = Modifier.fillMaxSize(),
