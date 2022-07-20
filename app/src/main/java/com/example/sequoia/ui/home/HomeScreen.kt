@@ -19,6 +19,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.example.sequoia.route.Routes
 import com.example.sequoia.R
+import com.example.sequoia.ui.theme.*
 import com.example.sequoia.ui.theme.SequoiaTheme
 
 @Composable
@@ -63,13 +64,13 @@ fun HomeScreen(mainViewModel: HomeViewModel = viewModel(), navController: NavCon
                         },
                         Modifier.fillMaxSize(),
                         shape = RoundedCornerShape(20),
-                        colors = ButtonDefaults.buttonColors(colorResource(id = R.color.play_button_background_olive_green))
+                        colors = ButtonDefaults.buttonColors(PlayButtonColor)
                     ) {
 
                         Icon(
                             painter = painterResource(R.drawable.ic_baseline_play_arrow),
                             contentDescription = "Play button content description.",
-                            tint = Color.Unspecified,
+                            tint = PlayTextColor,
                         )
 
                         Text(
@@ -78,7 +79,7 @@ fun HomeScreen(mainViewModel: HomeViewModel = viewModel(), navController: NavCon
                             text = "Play",
                             fontSize = 24.sp,
                             fontWeight = FontWeight.Bold,
-                            color = colorResource(R.color.play_text_dark_green),
+                            color = PlayTextColor,
                             textAlign = TextAlign.Start,
                         )
                     }
@@ -103,13 +104,13 @@ fun HomeScreen(mainViewModel: HomeViewModel = viewModel(), navController: NavCon
                         },
                         Modifier.fillMaxSize(),
                         shape = RoundedCornerShape(20),
-                        colors = ButtonDefaults.buttonColors(colorResource(id = R.color.history_button_background_light_blue))
+                        colors = ButtonDefaults.buttonColors(HistoryButtonColor)
                     ) {
 
                         Icon(
                             painter = painterResource(R.drawable.ic_baseline_account_box),
                             contentDescription = "History button content description.",
-                            tint = Color.Unspecified,
+                            tint = HistoryTextColor,
                         )
 
                         Text(
@@ -118,7 +119,7 @@ fun HomeScreen(mainViewModel: HomeViewModel = viewModel(), navController: NavCon
                             text = "History",
                             fontSize = 24.sp,
                             fontWeight = FontWeight.Bold,
-                            color = colorResource(R.color.history_button_dark_blue),
+                            color = HistoryTextColor,
                             textAlign = TextAlign.Start,
                         )
                     }
@@ -142,13 +143,13 @@ fun HomeScreen(mainViewModel: HomeViewModel = viewModel(), navController: NavCon
                         },
                         Modifier.fillMaxSize(),
                         shape = RoundedCornerShape(20),
-                        colors = ButtonDefaults.buttonColors(colorResource(id = R.color.setting_button_background_light_purple))
+                        colors = ButtonDefaults.buttonColors(InfoButtonColor)
                     ) {
 
                         Icon(
                             painter = painterResource(R.drawable.info_button),
                             contentDescription = "Info button content description.",
-                            tint = colorResource(R.color.setting_button_dark_purple),
+                            tint = InfoTextColor,
                             modifier = Modifier.size(20.dp)
                         )
 
@@ -158,7 +159,7 @@ fun HomeScreen(mainViewModel: HomeViewModel = viewModel(), navController: NavCon
                             text = "About Us",
                             fontSize = 24.sp,
                             fontWeight = FontWeight.Bold,
-                            color = colorResource(R.color.setting_button_dark_purple),
+                            color = InfoTextColor,
                             textAlign = TextAlign.Start,
                         )
                     }
