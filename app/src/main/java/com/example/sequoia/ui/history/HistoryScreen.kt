@@ -32,6 +32,9 @@ import androidx.compose.runtime.setValue
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.platform.LocalContext
+import com.example.sequoia.ui.repository.ScoreImpl
+import com.example.sequoia.ui.theme.gameIds
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -113,7 +116,12 @@ fun HistoryScreen(mainViewModel: HistoryViewModel = viewModel(), navController: 
                             }
                         }
                         AnimatedVisibility(simonSaysBtn) {
-                            Text(text = "\n\nScore goes here\n\n", fontSize = 20.sp)
+                            val scoreObj = ScoreImpl()
+                            val disp = gameIds["SimonSays"]?.let {
+                                scoreObj.getScore(gameId = it, LocalContext.current)}
+                            if (disp != null) {
+                                Text(text = disp, fontSize = 20.sp)
+                            }
                         }
 
                         //white space
@@ -237,7 +245,7 @@ fun HistoryScreen(mainViewModel: HistoryViewModel = viewModel(), navController: 
                                 colors = ButtonDefaults.buttonColors(colorResource(id = R.color.play_button_background_olive_green))
                             ) {
                                 Icon(
-                                    painter = painterResource(R.drawable.gotrhythm_icon),
+                                    painter = painterResource(R.drawable.licketysplit_icon),
                                     contentDescription = "Lickety Split Icon.",
                                     tint = colorResource(R.color.play_text_dark_green),
                                 )
