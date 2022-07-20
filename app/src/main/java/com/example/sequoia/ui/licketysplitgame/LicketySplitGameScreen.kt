@@ -1,5 +1,6 @@
 package com.example.sequoia.ui.licketysplitgame
 
+import android.content.Context
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
@@ -7,6 +8,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalConfiguration
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
@@ -17,9 +19,11 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.example.sequoia.R
 import com.example.sequoia.route.Routes
+import com.example.sequoia.ui.repository.ScoreImpl
 import com.example.sequoia.ui.theme.LicketySplitBackgroundColor
 import com.example.sequoia.ui.theme.LicketySplitBoltColor
 import com.example.sequoia.ui.theme.SequoiaTheme
+import com.example.sequoia.ui.theme.gameIds
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.isActive
 import kotlin.math.log10
@@ -118,16 +122,20 @@ fun DrawGameScreen(nc : NavController) {
     }
 
     if (viewState.attemptsLeft <= 0) {
+        val context = LocalContext.current
         AlertDialog(onDismissRequest = {},
             title = { Text(text = "Game Completed") },
             text = { Text("Your Score: ${viewState.score}") },
             confirmButton = {
-                Button(onClick = { viewModel.reset() }) {
+                Button(onClick = {
+                    saveScore(viewState.score, context)
+                    viewModel.reset() }) {
                     Text("Retry?")
                 }
             },
             dismissButton = {
                 Button(onClick = {
+                    saveScore(viewState.score, context)
                     nc.navigate(Routes.Games.route) {
                         popUpTo(Routes.Home.route)
                     } }) {
@@ -146,4 +154,12 @@ fun calculateXOffset(x: Float, cw: Dp): Dp {
 // calculates offset for bolt based on y% of canvas height
 fun calculateYOffset(y: Float, ch: Dp): Dp {
     return min(ch - BOLT_SIZE, ch.times(y))
+}
+
+fun saveScore(score: Int, context: Context) {
+    val scoreObj = ScoreImpl()
+    gameIds["LicketySplit"]?.let {
+        scoreObj.addScore(gameId = it,
+            gameScore = score, context = context)
+    }
 }

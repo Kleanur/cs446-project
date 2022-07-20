@@ -1,19 +1,13 @@
 package com.example.sequoia.ui.history
 
 import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.animation.ExperimentalAnimationApi
-import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -23,17 +17,20 @@ import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
-import com.example.sequoia.route.Routes
 import com.example.sequoia.R
-import com.example.sequoia.ui.home.HomeViewModel
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.setValue
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.platform.LocalContext
 import com.example.sequoia.ui.repository.ScoreImpl
 import com.example.sequoia.ui.theme.*
+import androidx.compose.foundation.*
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.padding
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.draw.clip
+import com.example.sequoia.ui.repository.Score
+
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -115,13 +112,37 @@ fun HistoryScreen(mainViewModel: HistoryViewModel = viewModel(), navController: 
                             }
                         }
                         AnimatedVisibility(simonSaysBtn) {
-                            val scoreObj = ScoreImpl()
-                            val disp = gameIds["SimonSays"]?.let {
-                                scoreObj.getScore(gameId = it, LocalContext.current)}
-                            if (disp != null) {
-                                Text(text = disp, fontSize = 20.sp)
+                            androidx.compose.foundation.layout.Box(
+                                modifier = androidx.compose.ui.Modifier.fillMaxWidth()
+                                    .clip(
+                                        shape = androidx.compose.foundation.shape.RoundedCornerShape(
+                                            1
+                                        )
+                                    )
+                            ) {
+                                androidx.compose.foundation.layout.Column(
+                                    modifier = androidx.compose.ui.Modifier
+                                        .background(com.example.sequoia.ui.theme.PlayButtonColor)
+                                        .fillMaxWidth()
+                                        .verticalScroll(androidx.compose.foundation.rememberScrollState())
+                                ) {
+                                    val scoreObj = com.example.sequoia.ui.repository.ScoreImpl()
+                                    val stringScores = scoreObj.getScore(
+                                        com.example.sequoia.ui.theme.gameIds["SimonSays"],
+                                        androidx.compose.ui.platform.LocalContext.current
+                                    )
+                                    androidx.compose.material3.Text(
+                                        text = stringScores,
+                                        fontSize = 22.sp,
+                                        fontWeight = androidx.compose.ui.text.font.FontWeight.Bold,
+                                        color = com.example.sequoia.ui.theme.PlayTextColor,
+                                        modifier = androidx.compose.ui.Modifier
+                                            .align(androidx.compose.ui.Alignment.CenterHorizontally)
+                                    )
+                                }
                             }
                         }
+
 
                         //white space
                         Row(
@@ -165,11 +186,22 @@ fun HistoryScreen(mainViewModel: HistoryViewModel = viewModel(), navController: 
                             }
                         }
                         AnimatedVisibility(pitchPerfectBtn) {
-                            androidx.compose.material3.Text(
-                                text = "\n\nScore goes here\n\n",
-                                fontSize = 20.sp
-                            )
+                            Box(modifier = Modifier.fillMaxWidth()
+                                .clip(shape = RoundedCornerShape(1))){
+                                Column(
+                                    modifier = Modifier
+                                        .background(InfoButtonColor)
+                                        .fillMaxWidth()
+                                        .verticalScroll(rememberScrollState())) {
+                                    val scoreObj = ScoreImpl()
+                                    val stringScores = scoreObj.getScore(gameIds["PitchPerfect"], LocalContext.current)
+                                    Text(text = stringScores, fontSize = 22.sp, fontWeight = FontWeight.Bold, color = InfoTextColor,
+                                        modifier= Modifier
+                                            .align(Alignment.CenterHorizontally) )
+                                }
+                            }
                         }
+
 
                         //white space
                         Row(
@@ -212,10 +244,20 @@ fun HistoryScreen(mainViewModel: HistoryViewModel = viewModel(), navController: 
                             }
                         }
                         AnimatedVisibility(gotRhythmBtn) {
-                            androidx.compose.material3.Text(
-                                text = "\n\nScore goes here\n\n",
-                                fontSize = 20.sp
-                            )
+                            Box(modifier = Modifier.fillMaxWidth()
+                                .clip(shape = RoundedCornerShape(1))){
+                                Column(
+                                    modifier = Modifier
+                                        .background(HistoryButtonColor)
+                                        .fillMaxWidth()
+                                        .verticalScroll(rememberScrollState())) {
+                                    val scoreObj = ScoreImpl()
+                                    val stringScores = scoreObj.getScore(gameIds["GotRhythm"], LocalContext.current)
+                                    Text(text = stringScores, fontSize = 22.sp, fontWeight = FontWeight.Bold, color = HistoryTextColor,
+                                        modifier= Modifier
+                                            .align(Alignment.CenterHorizontally) )
+                                }
+                            }
                         }
 
                         //white space
@@ -260,10 +302,20 @@ fun HistoryScreen(mainViewModel: HistoryViewModel = viewModel(), navController: 
                             }
                         }
                         AnimatedVisibility(licketySplitBtn) {
-                            androidx.compose.material3.Text(
-                                text = "\n\nScore goes here\n\n",
-                                fontSize = 20.sp
-                            )
+                            Box(modifier = Modifier.fillMaxWidth()
+                                .clip(shape = RoundedCornerShape(1))){
+                                Column(
+                                    modifier = Modifier
+                                        .background(PlayButtonColor)
+                                        .fillMaxWidth()
+                                        .verticalScroll(rememberScrollState())) {
+                                    val scoreObj = ScoreImpl()
+                                    val stringScores = scoreObj.getScore(gameIds["LicketySplit"], LocalContext.current)
+                                    Text(text = stringScores, fontSize = 22.sp, fontWeight = FontWeight.Bold, color = PlayTextColor,
+                                        modifier= Modifier
+                                            .align(Alignment.CenterHorizontally) )
+                                }
+                            }
                         }
                     }
 

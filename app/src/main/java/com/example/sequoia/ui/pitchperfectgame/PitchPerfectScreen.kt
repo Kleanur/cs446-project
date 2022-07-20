@@ -1,6 +1,7 @@
 package com.example.sequoia.ui.pitchperfectgame
 
 import android.app.Application
+import android.content.Context
 import android.widget.Toast
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -21,10 +22,8 @@ import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.navigation.NavController
 import com.example.sequoia.R
 import com.example.sequoia.route.Routes
-import com.example.sequoia.ui.theme.PitchPerfectBackgroundColor
-import com.example.sequoia.ui.theme.PitchPerfectButtonColor
-import com.example.sequoia.ui.theme.PitchPerfectIconColor
-import com.example.sequoia.ui.theme.SequoiaTheme
+import com.example.sequoia.ui.repository.ScoreImpl
+import com.example.sequoia.ui.theme.*
 
 
 @Composable
@@ -197,11 +196,16 @@ fun PitchPerfectScreen(
                         title = {Text(text = "Game Completed")},
                         text = {Text("Your Score: ${pitchPerfectViewModel.scoreState.collectAsState().value}")},
                         confirmButton = {
-                            Button(onClick = { pitchPerfectViewModel.resetGame() }) {
+
+                            Button(onClick = {
+                                saveScore(pitchPerfectViewModel.scoreState.value, context)
+                                pitchPerfectViewModel.resetGame()
+                            }) {
                                 Text("Retry?")
                             }},
                         dismissButton = {
                             Button(onClick = {
+                                saveScore(pitchPerfectViewModel.scoreState.value, context)
                                 navController.navigate(Routes.Games.route) }) {
                                 Text("Back to game menu")
                             }
@@ -235,6 +239,14 @@ fun PitchPerfectScreen(
                 null -> {}
             }
         }
+    }
+}
+
+fun saveScore(score: Int, context: Context) {
+    val scoreObj = ScoreImpl()
+    gameIds["PitchPerfect"]?.let {
+        scoreObj.addScore(gameId = it,
+            gameScore = score, context = context)
     }
 }
 

@@ -24,10 +24,8 @@ import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.example.sequoia.route.Routes
-import com.example.sequoia.ui.theme.GotRhythmBackgroundColor
-import com.example.sequoia.ui.theme.GotRhythmButtonColor
-import com.example.sequoia.ui.theme.GotRhythmPressedColor
-import com.example.sequoia.ui.theme.SequoiaTheme
+import com.example.sequoia.ui.repository.ScoreImpl
+import com.example.sequoia.ui.theme.*
 
 @Composable
 fun gotrythmGameScreen(nc: NavController) {
@@ -101,15 +99,19 @@ fun DrawGotRythmBoard(nc: NavController) {
     }
 
     if (viewState.attemptsLeft == 0) {
+        val context = LocalContext.current
         AlertDialog(onDismissRequest = {},
             title = {Text(text = "Game Completed")},
             text = {Text("Your Score: ${viewState.score}")},
             confirmButton = {
-                Button(onClick = { viewModel.reset() }) {
+                Button(onClick = {
+                    saveScore(viewState.score, context)
+                    viewModel.reset() }) {
                     Text("Retry?")
                 }},
             dismissButton = {
                 Button(onClick = {
+                    saveScore(viewState.score, context)
                     nc.navigate(Routes.Games.route) {
                         popUpTo(Routes.Home.route)
                     } }) {
@@ -166,6 +168,14 @@ fun CreateButton(counter: Int, pt:Boolean, viewModel: GotRythmViewModel, v:Vibra
         if (counter > 0) {
             Text(text = "$counter", fontSize = 50.sp)
         }
+    }
+}
+
+fun saveScore(score: Int, context: Context) {
+    val scoreObj = ScoreImpl()
+    gameIds["GotRhythm"]?.let {
+        scoreObj.addScore(gameId = it,
+            gameScore = score, context = context)
     }
 }
 

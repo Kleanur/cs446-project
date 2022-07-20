@@ -5,6 +5,7 @@ import androidx.compose.ui.platform.LocalContext
 import com.example.sequoia.ui.theme.games
 import org.json.JSONObject
 import java.io.*
+import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 
@@ -38,22 +39,69 @@ class ScoreImpl {
     }
 
 
-    public fun getScore(gameId: Int, context: Context): String{
+    public fun getScore(gameId: Int?, context: Context): String{
         val filename = games[gameId]
         val file = File(context.filesDir, filename)
         val fileReader = FileReader(file)
         val bufferedReader = BufferedReader(fileReader)
         val stringBuilder = StringBuilder()
-        var line: String? = bufferedReader.readLine()
+        var line: String? =  bufferedReader.readLine()
         while (line != null) {
             stringBuilder.append(line).append("\n")
             line = bufferedReader.readLine()
         }
         bufferedReader.close()
-
         val response = stringBuilder.toString()
-        System.out.println(response)
         return response
+    }
+
+    public fun getAllScores(gameId: Int?, context: Context): List<Score>{
+        val scores : MutableList<Score> = mutableListOf<Score>()
+        val filename = games[gameId]
+        val file = File(context.filesDir, filename)
+        val fileReader = FileReader(file)
+        val bufferedReader = BufferedReader(fileReader)
+        val stringBuilder = StringBuilder()
+        var line: String? = "Date : Score" + bufferedReader.readLine()
+        while (line != null) {
+            scores.add(createJsonObj(line))
+            stringBuilder.append(line).append("\n")
+            line = bufferedReader.readLine()
+        }
+        bufferedReader.close()
+        val response = stringBuilder.toString()
+        return scores
+    }
+
+
+    public fun createJsonObj(score: String): Score{
+        val jsonobj : JSONObject = JSONObject(score)
+        val scoreobj : Score = Score(
+            gameId = jsonobj.get("Id").toString().toInt(),
+            gameScore = jsonobj.get("Score").toString().toInt(),
+            gameDate = jsonobj.get("Date").toString())
+        return scoreobj
+    }
+
+    /*public fun getStringScores(jsonlist : List<Score>): String{
+        //val itr: Iterator<Score> = jsonlist.Iterator(jsonlist.size)
+
+        var list: String = ""
+        list += "Date : Score\n"
+        while (itr.hasNext()) {
+           var tscore = itr.next()
+           list+= tscore.stringdate + " : " + tscore.score.toString() + "\n"
+        }
+        return list
+    }*/
+
+    public fun getYValues(jsonlist : List<Score>): List<Int>{
+        val itr = jsonlist.listIterator()
+        val list: MutableList<Int> = mutableListOf()
+        while (itr.hasNext()) {
+            list.add(itr.next().score.toString().toInt())
+        }
+        return list
     }
 
     /*public fun deleteScores(context: Context): String{
