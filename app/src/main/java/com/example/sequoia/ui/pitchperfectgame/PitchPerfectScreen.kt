@@ -7,7 +7,6 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -26,8 +25,6 @@ import com.example.sequoia.ui.theme.PitchPerfectBackgroundColor
 import com.example.sequoia.ui.theme.PitchPerfectButtonColor
 import com.example.sequoia.ui.theme.PitchPerfectIconColor
 import com.example.sequoia.ui.theme.SequoiaTheme
-import kotlin.random.Random
-import kotlin.random.nextInt
 
 
 @Composable
@@ -40,9 +37,6 @@ fun PitchPerfectScreen(
 
     val gameRound = pitchPerfectViewModel.gameRoundState.collectAsState().value
     val playerAnswer = pitchPerfectViewModel.answerMutableState.collectAsState().value
-
-    val randomlyGeneratedIndexes =
-        pitchPerfectViewModel.randomlyGeneratedIndexes.collectAsState().value
 
     SequoiaTheme {
         // A surface container using the 'background' color from the theme
@@ -142,7 +136,6 @@ fun PitchPerfectScreen(
                     centerHorizontallyTo(playBtn)
                 }) {
                     for (i in 0..gameRound) {
-                        pitchPerfectViewModel.populateRandomlyGeneratedMutableStateList()
                         IconButton(
                             modifier = Modifier
                                 .width(50.dp)
@@ -150,7 +143,7 @@ fun PitchPerfectScreen(
                                 .padding(8.dp),
                             onClick = {
 
-                                pitchPerfectViewModel.chooseAnswerPitchSong(randomlyGeneratedIndexes[i])
+                                pitchPerfectViewModel.chooseAnswerPitchSong(i)
                                     ?.let { song ->
                                         pitchPerfectViewModel.playRandomSongForTenSeconds(song)
                                         pitchPerfectViewModel.updateSelectedPitchAnswerSong(song)

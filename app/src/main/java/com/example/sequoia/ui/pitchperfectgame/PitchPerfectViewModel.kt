@@ -37,11 +37,6 @@ class PitchPerfectViewModel constructor(application: Application) : BaseViewMode
     private val _gameRoundMutableState: MutableStateFlow<Int> = MutableStateFlow(1)
     val gameRoundState: StateFlow<Int> = _gameRoundMutableState
 
-    private val _randomlyGeneratedIndexes:
-            MutableStateFlow<MutableList<Int>> =
-        MutableStateFlow(mutableListOf())
-    val randomlyGeneratedIndexes: StateFlow<MutableList<Int>> = _randomlyGeneratedIndexes
-
     private val _playerAttemptMutableState: MutableStateFlow<Int> = MutableStateFlow(3)
     val playerAttemptState: StateFlow<Int> = _playerAttemptMutableState
 
@@ -88,19 +83,6 @@ class PitchPerfectViewModel constructor(application: Application) : BaseViewMode
         return if (answerPitchSongsMutableList.isEmpty().not()) {
             answerPitchSongsMutableList[indexNumber]
         } else null
-    }
-
-    fun populateRandomlyGeneratedMutableStateList() {
-        _randomlyGeneratedIndexes.value.add(generateUniqueRandomNumber(gameRoundState.value))
-    }
-
-    private fun generateUniqueRandomNumber(upperBound: Int): Int {
-        val randomNumber = Random.nextInt(0..upperBound)
-        return if (alreadyPickedRandomNumber.contains(randomNumber).not()) {
-            randomNumber
-        } else {
-            generateUniqueRandomNumber(upperBound)
-        }
     }
 
     private fun populateAnswerPitchSongsList() {

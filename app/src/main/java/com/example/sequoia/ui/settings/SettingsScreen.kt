@@ -54,7 +54,6 @@ fun SettingsScreen(navController: NavController) {
             modifier = Modifier.fillMaxSize(),
             color = MaterialTheme.colorScheme.background
         ) {
-            val checkedState = remember { mutableStateOf(true) }
             ConstraintLayout {
                 // Create references for the composables to constrain
                 val (switch, fontSizeBtn, nameHeaderTxt) = createRefs()
