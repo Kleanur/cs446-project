@@ -1,5 +1,6 @@
 package com.example.sequoia.ui.simonsaysgame
 
+import android.content.Context
 import android.view.MotionEvent
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
@@ -98,15 +99,20 @@ fun DrawSimonSaysBoard(nc : NavController) {
     }
 
     if (viewState.attemptsLeft == 0) {
+        val context = LocalContext.current
         AlertDialog(onDismissRequest = {},
         title = {Text(text = "GAME OVER")},
         text = {Text("Your Score: ${viewState.score}")},
         confirmButton = {
-            Button(onClick = { viewModel.reset() }) {
+            Button(onClick = {
+                saveScore(viewState.score, context)
+                viewModel.reset()
+            }) {
                 Text("Retry?")
             }},
             dismissButton = {
                 Button(onClick = {
+                    saveScore(viewState.score, context)
                     nc.navigate(Routes.Games.route) {
                     popUpTo(Routes.Home.route)
                 } }) {
@@ -114,11 +120,7 @@ fun DrawSimonSaysBoard(nc : NavController) {
                 }
             }
         )
-        val scoreObj = ScoreImpl()
-        gameIds["SimonSays"]?.let {
-            scoreObj.addScore(gameId = it,
-                gameScore = viewState.score, context = LocalContext.current)
-        }
+
     }
 }
 
@@ -154,5 +156,13 @@ fun squarebutton(color : Color, pt: Boolean, index:Int, viewModel: SimonSaysView
             },
         colors = ButtonDefaults.buttonColors(containerColor = color.value)) {
 
+    }
+}
+
+fun saveScore(score: Int, context: Context) {
+    val scoreObj = ScoreImpl()
+    gameIds["SimonSays"]?.let {
+        scoreObj.addScore(gameId = it,
+            gameScore = score, context = context)
     }
 }
