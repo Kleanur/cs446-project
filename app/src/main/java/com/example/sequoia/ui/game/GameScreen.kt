@@ -98,7 +98,7 @@ fun GamesScreen(mainViewModel: GameViewModel = viewModel(), navController: NavCo
                 ) {
                     Button(
                         onClick = {
-                            navController.navigate(Routes.SimonSaysGame.route) {
+                            navController.navigate(Routes.PitchPerfectGame.route) {
                                 popUpTo(Routes.Games.route)
                             }
                         },
@@ -137,7 +137,7 @@ fun GamesScreen(mainViewModel: GameViewModel = viewModel(), navController: NavCo
                 ) {
                     Button(
                         onClick = {
-                            navController.navigate(Routes.SimonSaysGame.route) {
+                            navController.navigate(Routes.GotRythmGame.route) {
                                 popUpTo(Routes.Games.route)
                             }
                         },
@@ -176,7 +176,7 @@ fun GamesScreen(mainViewModel: GameViewModel = viewModel(), navController: NavCo
                 ) {
                     Button(
                         onClick = {
-                            navController.navigate(Routes.SimonSaysGame.route) {
+                            navController.navigate(Routes.LicketySplitGame.route) {
                                 popUpTo(Routes.Games.route)
                             }
                         },

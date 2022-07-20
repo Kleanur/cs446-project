@@ -1,10 +1,7 @@
 package com.example.sequoia.ui.home
 
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
@@ -34,7 +31,7 @@ fun HomeScreen(mainViewModel: HomeViewModel = viewModel(), navController: NavCon
         ) {
             ConstraintLayout {
                 // Create references for the composables to constrain
-                val (treeTmg, historyBtn, settingBtn, gamesBtn, nameHeaderTxt) = createRefs()
+                val (treeTmg, historyBtn, infoBtn, gamesBtn, nameHeaderTxt) = createRefs()
 
                 Text(
                     text = "Sequoia", fontSize = 32.sp, fontWeight = FontWeight.Bold,
@@ -90,47 +87,8 @@ fun HomeScreen(mainViewModel: HomeViewModel = viewModel(), navController: NavCon
 
                 Box(
                     modifier = Modifier
-                        .constrainAs(settingBtn) {
-                            top.linkTo(gamesBtn.bottom, margin = 24.dp)
-                            start.linkTo(parent.start, margin = 16.dp)
-                            end.linkTo(parent.end, margin = 16.dp)
-                        }
-                        .height(100.dp)
-                        .padding(start = 16.dp, end = 16.dp)
-                ) {
-                    Button(
-                        onClick = {
-                            navController.navigate(Routes.Settings.route) {
-                                popUpTo(Routes.Home.route)
-                            }
-                        },
-                        Modifier.fillMaxSize(),
-                        shape = RoundedCornerShape(20),
-                        colors = ButtonDefaults.buttonColors(colorResource(id = R.color.setting_button_background_light_purple))
-                    ) {
-
-                        Icon(
-                            painter = painterResource(R.drawable.ic_baseline_settings),
-                            contentDescription = "Setting button content description.",
-                            tint = Color.Unspecified,
-                        )
-
-                        Text(
-                            modifier = Modifier
-                                .fillMaxSize(),
-                            text = "Settings",
-                            fontSize = 24.sp,
-                            fontWeight = FontWeight.Bold,
-                            color = colorResource(R.color.setting_button_dark_purple),
-                            textAlign = TextAlign.Start,
-                        )
-                    }
-                }
-
-                Box(
-                    modifier = Modifier
                         .constrainAs(historyBtn) {
-                            top.linkTo(settingBtn.bottom, margin = 24.dp)
+                            top.linkTo(gamesBtn.bottom, margin = 24.dp)
                             start.linkTo(parent.start, margin = 16.dp)
                             end.linkTo(parent.end, margin = 16.dp)
                         }
@@ -165,9 +123,50 @@ fun HomeScreen(mainViewModel: HomeViewModel = viewModel(), navController: NavCon
                         )
                     }
                 }
+
+                Box(
+                    modifier = Modifier
+                        .constrainAs(infoBtn) {
+                            top.linkTo(historyBtn.bottom, margin = 24.dp)
+                            start.linkTo(parent.start, margin = 16.dp)
+                            end.linkTo(parent.end, margin = 16.dp)
+                        }
+                        .height(100.dp)
+                        .padding(start = 16.dp, end = 16.dp)
+                ) {
+                    Button(
+                        onClick = {
+                            navController.navigate(Routes.InfoScreen.route) {
+                                popUpTo(Routes.Home.route)
+                            }
+                        },
+                        Modifier.fillMaxSize(),
+                        shape = RoundedCornerShape(20),
+                        colors = ButtonDefaults.buttonColors(colorResource(id = R.color.setting_button_background_light_purple))
+                    ) {
+
+                        Icon(
+                            painter = painterResource(R.drawable.info_button),
+                            contentDescription = "Info button content description.",
+                            tint = colorResource(R.color.setting_button_dark_purple),
+                            modifier = Modifier.size(20.dp)
+                        )
+
+                        Text(
+                            modifier = Modifier
+                                .fillMaxSize(),
+                            text = "About Us",
+                            fontSize = 24.sp,
+                            fontWeight = FontWeight.Bold,
+                            color = colorResource(R.color.setting_button_dark_purple),
+                            textAlign = TextAlign.Start,
+                        )
+                    }
+                }
+
                 Image(painter = painterResource(R.drawable.tree_home), contentDescription = "Image for Home Screen",  modifier = Modifier
                     .constrainAs(treeTmg) {
-                        top.linkTo(historyBtn.bottom, margin = 24.dp)
+                        top.linkTo(infoBtn.bottom, margin = 24.dp)
                         start.linkTo(parent.start, margin = 16.dp)
                         end.linkTo(parent.end, margin = 16.dp)
                     }

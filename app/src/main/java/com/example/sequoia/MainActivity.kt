@@ -1,5 +1,6 @@
 package com.example.sequoia
 
+
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -11,8 +12,12 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.sequoia.route.Routes
 import com.example.sequoia.ui.game.GamesScreen
+import com.example.sequoia.ui.gotrythm.gotrythmGameScreen
 import com.example.sequoia.ui.home.HomeScreen
 import com.example.sequoia.ui.history.HistoryScreen
+import com.example.sequoia.ui.infoScreen.InfoScreen
+import com.example.sequoia.ui.pitchperfectgame.PitchPerfectScreen
+import com.example.sequoia.ui.licketysplitgame.LicketySplitGameScreen
 import com.example.sequoia.ui.settings.SettingsScreen
 import com.example.sequoia.ui.simonsaysgame.SimonSaysGameScreen
 import com.example.sequoia.ui.theme.SequoiaTheme
@@ -37,11 +42,25 @@ class MainActivity : ComponentActivity() {
                     SimonSaysGameScreen(nc = navController)
                 }
 
+                composable(route = Routes.LicketySplitGame.route) {
+                    LicketySplitGameScreen(nc = navController)
+                }
+
                 composable(route = Routes.History.route){
                     HistoryScreen(navController = navController)
                 }
                 composable(route = Routes.Settings.route) {
                     SettingsScreen(navController = navController)
+                }
+
+                composable(route = Routes.GotRythmGame.route) {
+                    gotrythmGameScreen(nc = navController)
+                }
+                composable(route = Routes.PitchPerfectGame.route) {
+                    PitchPerfectScreen(navController = navController)
+                }
+                composable(route = Routes.InfoScreen.route) {
+                    InfoScreen(navController = navController)
                 }
             }
         }
