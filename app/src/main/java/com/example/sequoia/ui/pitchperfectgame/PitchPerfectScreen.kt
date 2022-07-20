@@ -1,13 +1,13 @@
 package com.example.sequoia.ui.pitchperfectgame
 
 import android.app.Application
+import android.content.Context
 import android.widget.Toast
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -22,9 +22,8 @@ import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.navigation.NavController
 import com.example.sequoia.R
 import com.example.sequoia.route.Routes
-import com.example.sequoia.ui.theme.SequoiaTheme
-import kotlin.random.Random
-import kotlin.random.nextInt
+import com.example.sequoia.ui.repository.ScoreImpl
+import com.example.sequoia.ui.theme.*
 
 
 @Composable
@@ -38,18 +37,11 @@ fun PitchPerfectScreen(
     val gameRound = pitchPerfectViewModel.gameRoundState.collectAsState().value
     val playerAnswer = pitchPerfectViewModel.answerMutableState.collectAsState().value
 
-    val randomlyGeneratedIndexes =
-        pitchPerfectViewModel.randomlyGeneratedIndexes.collectAsState().value
-
-    val iconColor = remember { mutableStateOf(R.color.purple_700) }
-
-
-
     SequoiaTheme {
         // A surface container using the 'background' color from the theme
         Surface(
             modifier = Modifier.fillMaxSize(),
-            color = MaterialTheme.colorScheme.background
+            color = PitchPerfectBackgroundColor
         ) {
 
             ConstraintLayout {
@@ -63,9 +55,9 @@ fun PitchPerfectScreen(
                 }) {
                     Text(
                         text = "Scores: ${pitchPerfectViewModel.scoreState.collectAsState().value}",
-                        fontSize = 15.sp,
+                        fontSize = 20.sp,
                         fontWeight = FontWeight.Bold,
-                        color = colorResource(R.color.game_button_background_dark_green),
+                        color = Color.Black,
                         textAlign = TextAlign.Start,
                     )
                 }
@@ -77,9 +69,9 @@ fun PitchPerfectScreen(
                 }) {
                     Text(
                         text = "Chances: ${pitchPerfectViewModel.playerAttemptState.collectAsState().value}",
-                        fontSize = 15.sp,
+                        fontSize = 20.sp,
                         fontWeight = FontWeight.Bold,
-                        color = colorResource(R.color.game_button_background_dark_green),
+                        color = Color.Black,
                         textAlign = TextAlign.Start,
                     )
                 }
@@ -104,7 +96,7 @@ fun PitchPerfectScreen(
                         },
                         Modifier.fillMaxSize(),
                         shape = RoundedCornerShape(20),
-                        colors = ButtonDefaults.buttonColors(colorResource(id = R.color.history_button_dark_blue))
+                        colors = ButtonDefaults.buttonColors(PitchPerfectButtonColor)
                     ) {
 
                         Icon(
@@ -133,7 +125,7 @@ fun PitchPerfectScreen(
                         text = "Pick the correct song",
                         fontSize = 30.sp,
                         fontWeight = FontWeight.Bold,
-                        color = colorResource(R.color.game_button_background_dark_green),
+                        color = Color.Black,
                         textAlign = TextAlign.Start,
                     )
                 }
@@ -143,7 +135,6 @@ fun PitchPerfectScreen(
                     centerHorizontallyTo(playBtn)
                 }) {
                     for (i in 0..gameRound) {
-                        pitchPerfectViewModel.populateRandomlyGeneratedMutableStateList()
                         IconButton(
                             modifier = Modifier
                                 .width(50.dp)
@@ -151,7 +142,7 @@ fun PitchPerfectScreen(
                                 .padding(8.dp),
                             onClick = {
 
-                                pitchPerfectViewModel.chooseAnswerPitchSong(randomlyGeneratedIndexes[i])
+                                pitchPerfectViewModel.chooseAnswerPitchSong(i)
                                     ?.let { song ->
                                         pitchPerfectViewModel.playRandomSongForTenSeconds(song)
                                         pitchPerfectViewModel.updateSelectedPitchAnswerSong(song)
@@ -161,7 +152,7 @@ fun PitchPerfectScreen(
                             Icon(
                                 painter = painterResource(R.drawable.pitchperfect_icon),
                                 contentDescription = "music button content.",
-                                tint = colorResource(id = iconColor.value),
+                                tint = PitchPerfectIconColor,
                                 modifier = Modifier
                                     .fillMaxSize(),
                             )
@@ -185,7 +176,7 @@ fun PitchPerfectScreen(
                         },
                         Modifier.fillMaxSize(),
                         shape = RoundedCornerShape(20),
-                        colors = ButtonDefaults.buttonColors(colorResource(id = R.color.game_button_background_dark_green))
+                        colors = ButtonDefaults.buttonColors(PitchPerfectButtonColor)
                     ) {
 
                     }
@@ -202,14 +193,19 @@ fun PitchPerfectScreen(
 
                 if (pitchPerfectViewModel.playerAttemptState.collectAsState().value== 0) {
                     AlertDialog(onDismissRequest = {},
-                        title = {Text(text = "GAME OVER")},
+                        title = {Text(text = "Game Completed")},
                         text = {Text("Your Score: ${pitchPerfectViewModel.scoreState.collectAsState().value}")},
                         confirmButton = {
-                            Button(onClick = { pitchPerfectViewModel.resetGame() }) {
+
+                            Button(onClick = {
+                                saveScore(pitchPerfectViewModel.scoreState.value, context)
+                                pitchPerfectViewModel.resetGame()
+                            }) {
                                 Text("Retry?")
                             }},
                         dismissButton = {
                             Button(onClick = {
+                                saveScore(pitchPerfectViewModel.scoreState.value, context)
                                 navController.navigate(Routes.Games.route) }) {
                                 Text("Back to game menu")
                             }
@@ -243,6 +239,14 @@ fun PitchPerfectScreen(
                 null -> {}
             }
         }
+    }
+}
+
+fun saveScore(score: Int, context: Context) {
+    val scoreObj = ScoreImpl()
+    gameIds["PitchPerfect"]?.let {
+        scoreObj.addScore(gameId = it,
+            gameScore = score, context = context)
     }
 }
 

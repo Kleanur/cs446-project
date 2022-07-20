@@ -26,7 +26,6 @@ import androidx.navigation.NavController
 import com.example.sequoia.route.Routes
 import com.example.sequoia.R
 import com.example.sequoia.ui.home.HomeViewModel
-import com.example.sequoia.ui.theme.SequoiaTheme
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.setValue
 import androidx.compose.runtime.remember
@@ -34,7 +33,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.platform.LocalContext
 import com.example.sequoia.ui.repository.ScoreImpl
-import com.example.sequoia.ui.theme.gameIds
+import com.example.sequoia.ui.theme.*
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -97,12 +96,12 @@ fun HistoryScreen(mainViewModel: HistoryViewModel = viewModel(), navController: 
                                 },
                                 Modifier.fillMaxSize(),
                                 shape = RoundedCornerShape(20),
-                                colors = ButtonDefaults.buttonColors(colorResource(id = R.color.play_button_background_olive_green))
+                                colors = ButtonDefaults.buttonColors(PlayButtonColor)
                             ) {
                                 Icon(
                                     painter = painterResource(R.drawable.simonsays_icon),
                                     contentDescription = "Simon Says Icon.",
-                                    tint = colorResource(R.color.play_text_dark_green),
+                                    tint = PlayTextColor,
                                 )
                                 Text(
                                     modifier = Modifier
@@ -110,7 +109,7 @@ fun HistoryScreen(mainViewModel: HistoryViewModel = viewModel(), navController: 
                                     text = "Simon Says",
                                     fontSize = 24.sp,
                                     fontWeight = FontWeight.Bold,
-                                    color = colorResource(R.color.play_text_dark_green),
+                                    color = PlayTextColor,
                                     textAlign = TextAlign.Start,
                                 )
                             }
@@ -147,12 +146,12 @@ fun HistoryScreen(mainViewModel: HistoryViewModel = viewModel(), navController: 
                                 },
                                 Modifier.fillMaxSize(),
                                 shape = RoundedCornerShape(20),
-                                colors = ButtonDefaults.buttonColors(colorResource(id = R.color.setting_button_background_light_purple))
+                                colors = ButtonDefaults.buttonColors(InfoButtonColor)
                             ) {
                                 Icon(
                                     painter = painterResource(R.drawable.pitchperfect_icon),
                                     contentDescription = "Pitch Perfect Icon.",
-                                    tint = colorResource(R.color.setting_button_dark_purple),
+                                    tint = InfoTextColor,
                                 )
                                 Text(
                                     modifier = Modifier
@@ -160,16 +159,18 @@ fun HistoryScreen(mainViewModel: HistoryViewModel = viewModel(), navController: 
                                     text = "Pitch Perfect",
                                     fontSize = 24.sp,
                                     fontWeight = FontWeight.Bold,
-                                    color = colorResource(R.color.setting_button_dark_purple),
+                                    color = InfoTextColor,
                                     textAlign = TextAlign.Start,
                                 )
                             }
                         }
                         AnimatedVisibility(pitchPerfectBtn) {
-                            androidx.compose.material3.Text(
-                                text = "\n\nScore goes here\n\n",
-                                fontSize = 20.sp
-                            )
+                            val scoreObj = ScoreImpl()
+                            val disp = gameIds["PitchPerfect"]?.let {
+                                scoreObj.getScore(gameId = it, LocalContext.current)}
+                            if (disp != null) {
+                                Text(text = disp, fontSize = 20.sp)
+                            }
                         }
 
                         //white space
@@ -194,12 +195,12 @@ fun HistoryScreen(mainViewModel: HistoryViewModel = viewModel(), navController: 
                                 },
                                 Modifier.fillMaxSize(),
                                 shape = RoundedCornerShape(20),
-                                colors = ButtonDefaults.buttonColors(colorResource(id = R.color.history_button_background_light_blue))
+                                colors = ButtonDefaults.buttonColors(HistoryButtonColor)
                             ) {
                                 Icon(
                                     painter = painterResource(R.drawable.gotrhythm_icon),
                                     contentDescription = "Got Rhythm Icon.",
-                                    tint = colorResource(R.color.history_button_dark_blue),
+                                    tint = HistoryTextColor,
                                 )
                                 Text(
                                     modifier = Modifier
@@ -207,16 +208,18 @@ fun HistoryScreen(mainViewModel: HistoryViewModel = viewModel(), navController: 
                                     text = "Got Rhythm",
                                     fontSize = 24.sp,
                                     fontWeight = FontWeight.Bold,
-                                    color = colorResource(R.color.history_button_dark_blue),
+                                    color = HistoryTextColor,
                                     textAlign = TextAlign.Start,
                                 )
                             }
                         }
                         AnimatedVisibility(gotRhythmBtn) {
-                            androidx.compose.material3.Text(
-                                text = "\n\nScore goes here\n\n",
-                                fontSize = 20.sp
-                            )
+                            val scoreObj = ScoreImpl()
+                            val disp = gameIds["GotRhythm"]?.let {
+                                scoreObj.getScore(gameId = it, LocalContext.current)}
+                            if (disp != null) {
+                                Text(text = disp, fontSize = 20.sp)
+                            }
                         }
 
                         //white space
@@ -242,12 +245,12 @@ fun HistoryScreen(mainViewModel: HistoryViewModel = viewModel(), navController: 
                                 },
                                 Modifier.fillMaxSize(),
                                 shape = RoundedCornerShape(20),
-                                colors = ButtonDefaults.buttonColors(colorResource(id = R.color.play_button_background_olive_green))
+                                colors = ButtonDefaults.buttonColors(PlayButtonColor)
                             ) {
                                 Icon(
                                     painter = painterResource(R.drawable.licketysplit_icon),
                                     contentDescription = "Lickety Split Icon.",
-                                    tint = colorResource(R.color.play_text_dark_green),
+                                    tint = PlayTextColor,
                                 )
                                 Text(
                                     modifier = Modifier
@@ -255,16 +258,18 @@ fun HistoryScreen(mainViewModel: HistoryViewModel = viewModel(), navController: 
                                     text = "Lickety Split",
                                     fontSize = 24.sp,
                                     fontWeight = FontWeight.Bold,
-                                    color = colorResource(R.color.play_text_dark_green),
+                                    color = PlayTextColor,
                                     textAlign = TextAlign.Start,
                                 )
                             }
                         }
                         AnimatedVisibility(licketySplitBtn) {
-                            androidx.compose.material3.Text(
-                                text = "\n\nScore goes here\n\n",
-                                fontSize = 20.sp
-                            )
+                            val scoreObj = ScoreImpl()
+                            val disp = gameIds["LicketySplit"]?.let {
+                                scoreObj.getScore(gameId = it, LocalContext.current)}
+                            if (disp != null) {
+                                Text(text = disp, fontSize = 20.sp)
+                            }
                         }
                     }
 

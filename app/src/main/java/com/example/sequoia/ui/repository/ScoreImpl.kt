@@ -39,6 +39,7 @@ class ScoreImpl {
 
 
     public fun getScore(gameId: Int, context: Context): String{
+        val scores : MutableList<Score> = mutableListOf<Score>()
         val filename = games[gameId]
         val file = File(context.filesDir, filename)
         val fileReader = FileReader(file)
@@ -46,14 +47,22 @@ class ScoreImpl {
         val stringBuilder = StringBuilder()
         var line: String? = bufferedReader.readLine()
         while (line != null) {
+            scores.add(createJsonObj(line))
             stringBuilder.append(line).append("\n")
             line = bufferedReader.readLine()
         }
         bufferedReader.close()
-
         val response = stringBuilder.toString()
-        System.out.println(response)
         return response
+    }
+
+    public fun createJsonObj(score: String): Score{
+        val jsonobj : JSONObject = JSONObject(score)
+        val scoreobj : Score = Score(
+            gameId = jsonobj.get("Id").toString().toInt(),
+            gameScore = jsonobj.get("Score").toString().toInt(),
+            gameDate = jsonobj.get("Date").toString())
+        return scoreobj
     }
 
     /*public fun deleteScores(context: Context): String{

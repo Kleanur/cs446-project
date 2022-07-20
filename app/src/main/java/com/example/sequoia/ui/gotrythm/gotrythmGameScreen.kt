@@ -18,32 +18,27 @@ import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.pointer.pointerInteropFilter
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.constraintlayout.compose.ConstraintLayout
-import androidx.core.content.ContextCompat.getSystemService
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
-import com.example.sequoia.R
 import com.example.sequoia.route.Routes
-import com.example.sequoia.ui.simonsaysgame.DrawSimonSaysBoard
-import com.example.sequoia.ui.simonsaysgame.SimonSaysViewModel
-import com.example.sequoia.ui.theme.SequoiaTheme
+import com.example.sequoia.ui.repository.ScoreImpl
+import com.example.sequoia.ui.theme.*
 
 @Composable
 fun gotrythmGameScreen(nc: NavController) {
     SequoiaTheme {
         Surface(
             modifier = Modifier.fillMaxSize(),
-            color = MaterialTheme.colorScheme.background
+            color = GotRhythmBackgroundColor
         ) {
             DrawGotRythmBoard(nc)
         }
     }
 }
 
-@OptIn(ExperimentalComposeUiApi::class)
 @Composable
 fun DrawGotRythmBoard(nc: NavController) {
     val viewModel = viewModel<GotRythmViewModel>()
@@ -71,7 +66,8 @@ fun DrawGotRythmBoard(nc: NavController) {
                     top.linkTo(parent.top, margin = 20.dp)
                 }) {
             Text(
-                text = "Chances: ${viewState.attemptsLeft}"
+                text = "Chances: ${viewState.attemptsLeft}",
+                fontSize = 20.sp
             )
             if (!viewState.gameRunning) {
                 Button(onClick = {
@@ -79,12 +75,14 @@ fun DrawGotRythmBoard(nc: NavController) {
                 }
                 ) {
                     Text(
-                        text = "Start"
+                        text = "Start",
+                        fontSize = 20.sp
                     )
                 }
             }
             Text(
-                text = "Scores: ${viewState.score}"
+                text = "Scores: ${viewState.score}",
+                fontSize = 20.sp
             )
         }
         Column(
@@ -96,20 +94,24 @@ fun DrawGotRythmBoard(nc: NavController) {
                 end.linkTo(parent.end, margin = 0.dp)
             }
         ) {
-            createbutton(viewState.counter, viewState.playerTurn, viewModel, vib)
+            CreateButton(viewState.counter, viewState.playerTurn, viewModel, vib)
         }
     }
 
     if (viewState.attemptsLeft == 0) {
+        val context = LocalContext.current
         AlertDialog(onDismissRequest = {},
-            title = {Text(text = "TEST IS DONE!")},
+            title = {Text(text = "Game Completed")},
             text = {Text("Your Score: ${viewState.score}")},
             confirmButton = {
-                Button(onClick = { viewModel.reset() }) {
+                Button(onClick = {
+                    saveScore(viewState.score, context)
+                    viewModel.reset() }) {
                     Text("Retry?")
                 }},
             dismissButton = {
                 Button(onClick = {
+                    saveScore(viewState.score, context)
                     nc.navigate(Routes.Games.route) {
                         popUpTo(Routes.Home.route)
                     } }) {
@@ -122,9 +124,9 @@ fun DrawGotRythmBoard(nc: NavController) {
 
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
-fun createbutton(counter: Int, pt:Boolean, viewModel: GotRythmViewModel, v:Vibrator) {
-    val button = colorResource(id = R.color.games_txt_green)
-    val press = colorResource(id=R.color.button_pressed)
+fun CreateButton(counter: Int, pt:Boolean, viewModel: GotRythmViewModel, v:Vibrator) {
+    val button = GotRhythmButtonColor
+    val press = GotRhythmPressedColor
     val color = remember{ mutableStateOf(button)}
 
 
@@ -166,6 +168,14 @@ fun createbutton(counter: Int, pt:Boolean, viewModel: GotRythmViewModel, v:Vibra
         if (counter > 0) {
             Text(text = "$counter", fontSize = 50.sp)
         }
+    }
+}
+
+fun saveScore(score: Int, context: Context) {
+    val scoreObj = ScoreImpl()
+    gameIds["GotRhythm"]?.let {
+        scoreObj.addScore(gameId = it,
+            gameScore = score, context = context)
     }
 }
 
