@@ -165,14 +165,14 @@ fun HomeScreen(mainViewModel: HomeViewModel = viewModel(), navController: NavCon
                     }
                 }
 
-                Image(painter = painterResource(R.drawable.tree_home), contentDescription = "Image for Home Screen",  modifier = Modifier
+                Image(painter = painterResource(R.drawable.cs446_biggest_tree), contentDescription = "Image for Home Screen",  modifier = Modifier
                     .constrainAs(treeTmg) {
                         top.linkTo(infoBtn.bottom, margin = 24.dp)
-                        start.linkTo(parent.start, margin = 16.dp)
-                        end.linkTo(parent.end, margin = 16.dp)
+                        start.linkTo(parent.start, margin = 5.dp)
+                        end.linkTo(parent.end, margin = 5.dp)
                     }
-                    .height(240.dp)
-                    .padding(start = 16.dp, end = 16.dp) )
+                    .height(260.dp)
+                    .padding(start = 5.dp, end = 5.dp) )
 
             }
         }

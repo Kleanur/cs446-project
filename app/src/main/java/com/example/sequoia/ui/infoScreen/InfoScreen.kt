@@ -46,7 +46,9 @@ fun InfoScreen(navController: NavController) {
                         header1,
                         desc1,
                         header2,
-                        desc2
+                        desc2,
+                        refHeader,
+                        refList
                     ) = createRefs()
                     Text(
                         text = "About Us", fontSize = 32.sp, fontWeight = FontWeight.Bold,
@@ -105,6 +107,33 @@ fun InfoScreen(navController: NavController) {
                         color = InfoScreenTextColor,
                         modifier = Modifier.constrainAs(desc2) {
                             top.linkTo(header2.bottom, margin = 8.dp)
+                            start.linkTo(parent.start, margin = 8.dp)
+                            end.linkTo(parent.end, margin = 8.dp)
+                            width = Dimension.matchParent
+                        },
+                        textAlign = TextAlign.Start,
+                    )
+
+                    Text(
+                        text = "References",
+                        fontSize = 16.sp,
+                        fontWeight = FontWeight.Bold,
+                        color = InfoScreenTextColor,
+                        modifier = Modifier.constrainAs(refHeader) {
+                            top.linkTo(desc2.bottom, margin = 16.dp)
+                            start.linkTo(parent.start, margin = 8.dp)
+                            end.linkTo(parent.end, margin = 8.dp)
+                            width = Dimension.matchParent
+                        },
+                        textAlign = TextAlign.Start,
+                    )
+
+                    Text(
+                        text = "https://www.reuters.com/article/us-health-hearing-brain-training-idUSKBN1D22OZ\nhttps://doi.org/10.1371/journal.pone.0029676",
+                        fontSize = 12.sp,
+                        color = InfoScreenTextColor,
+                        modifier = Modifier.constrainAs(refList) {
+                            top.linkTo(refHeader.bottom, margin = 8.dp)
                             start.linkTo(parent.start, margin = 8.dp)
                             end.linkTo(parent.end, margin = 8.dp)
                             width = Dimension.matchParent
