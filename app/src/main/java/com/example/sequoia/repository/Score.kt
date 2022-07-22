@@ -1,4 +1,4 @@
-package com.example.sequoia.ui.repository
+package com.example.sequoia.repository
 
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter

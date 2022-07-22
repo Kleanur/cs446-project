@@ -1,17 +1,13 @@
-package com.example.sequoia.ui.repository
+package com.example.sequoia.repository
 import android.content.Context
-import androidx.compose.runtime.Composable
-import androidx.compose.ui.platform.LocalContext
-import com.example.sequoia.ui.theme.games
 import org.json.JSONObject
 import java.io.*
-import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 
-class ScoreImpl {
+object ScoreImpl {
 
-    public fun createJsonObj(gameId: Int, gameScore: Int): JSONObject{
+    fun createJsonObj(gameId: Int, gameScore: Int): JSONObject{
         val date = LocalDateTime.now()
         val score = JSONObject()
         score.put("Id", gameId)
@@ -21,7 +17,7 @@ class ScoreImpl {
     }
 
 
-    public fun addScore(gameId: Int, gameScore: Int, context: Context) {
+    fun addScore(gameId: Int, gameScore: Int, context: Context) {
         val score = createJsonObj(gameId, gameScore).toString()
         val filename = games[gameId]
         println(gameId)
@@ -39,7 +35,7 @@ class ScoreImpl {
     }
 
 
-    public fun getScore(gameId: Int?, context: Context): String{
+    fun getScore(gameId: Int?, context: Context): String{
         val filename = games[gameId]
         val file = File(context.filesDir, filename)
         val fileReader = FileReader(file)
@@ -55,7 +51,7 @@ class ScoreImpl {
         return response
     }
 
-    public fun getAllScores(gameId: Int?, context: Context): List<Score>{
+    fun getAllScores(gameId: Int?, context: Context): List<Score>{
         val scores : MutableList<Score> = mutableListOf<Score>()
         val filename = games[gameId]
         val file = File(context.filesDir, filename)
@@ -74,7 +70,7 @@ class ScoreImpl {
     }
 
 
-    public fun createJsonObj(score: String): Score{
+    fun createJsonObj(score: String): Score{
         val jsonobj : JSONObject = JSONObject(score)
         val scoreobj : Score = Score(
             gameId = jsonobj.get("Id").toString().toInt(),
@@ -95,7 +91,7 @@ class ScoreImpl {
         return list
     }*/
 
-    public fun getYValues(jsonlist : List<Score>): List<Int>{
+    fun getYValues(jsonlist : List<Score>): List<Int>{
         val itr = jsonlist.listIterator()
         val list: MutableList<Int> = mutableListOf()
         while (itr.hasNext()) {
