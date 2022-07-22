@@ -22,7 +22,8 @@ import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.navigation.NavController
 import com.example.sequoia.R
 import com.example.sequoia.route.Routes
-import com.example.sequoia.ui.repository.ScoreImpl
+import com.example.sequoia.repository.ScoreImpl
+import com.example.sequoia.repository.gameIds
 import com.example.sequoia.ui.theme.*
 
 
@@ -243,9 +244,8 @@ fun PitchPerfectScreen(
 }
 
 fun saveScore(score: Int, context: Context) {
-    val scoreObj = ScoreImpl()
     gameIds["PitchPerfect"]?.let {
-        scoreObj.addScore(gameId = it,
+        ScoreImpl.addScore(gameId = it,
             gameScore = score, context = context)
     }
 }

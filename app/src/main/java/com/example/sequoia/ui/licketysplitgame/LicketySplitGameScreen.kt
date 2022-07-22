@@ -6,7 +6,6 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
@@ -19,11 +18,11 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.example.sequoia.R
 import com.example.sequoia.route.Routes
-import com.example.sequoia.ui.repository.ScoreImpl
+import com.example.sequoia.repository.ScoreImpl
 import com.example.sequoia.ui.theme.LicketySplitBackgroundColor
 import com.example.sequoia.ui.theme.LicketySplitBoltColor
 import com.example.sequoia.ui.theme.SequoiaTheme
-import com.example.sequoia.ui.theme.gameIds
+import com.example.sequoia.repository.gameIds
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.isActive
 import kotlin.math.log10
@@ -157,9 +156,8 @@ fun calculateYOffset(y: Float, ch: Dp): Dp {
 }
 
 fun saveScore(score: Int, context: Context) {
-    val scoreObj = ScoreImpl()
     gameIds["LicketySplit"]?.let {
-        scoreObj.addScore(gameId = it,
+        ScoreImpl.addScore(gameId = it,
             gameScore = score, context = context)
     }
 }

@@ -22,14 +22,14 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.setValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.platform.LocalContext
-import com.example.sequoia.ui.repository.ScoreImpl
+import com.example.sequoia.repository.ScoreImpl
 import com.example.sequoia.ui.theme.*
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.draw.clip
-import com.example.sequoia.ui.repository.Score
+import com.example.sequoia.repository.gameIds
 
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -112,32 +112,31 @@ fun HistoryScreen(mainViewModel: HistoryViewModel = viewModel(), navController: 
                             }
                         }
                         AnimatedVisibility(simonSaysBtn) {
-                            androidx.compose.foundation.layout.Box(
-                                modifier = androidx.compose.ui.Modifier.fillMaxWidth()
+                            Box(
+                                modifier = Modifier.fillMaxWidth()
                                     .clip(
-                                        shape = androidx.compose.foundation.shape.RoundedCornerShape(
+                                        shape = RoundedCornerShape(
                                             1
                                         )
                                     )
                             ) {
-                                androidx.compose.foundation.layout.Column(
-                                    modifier = androidx.compose.ui.Modifier
-                                        .background(com.example.sequoia.ui.theme.PlayButtonColor)
+                                Column(
+                                    modifier = Modifier
+                                        .background(PlayButtonColor)
                                         .fillMaxWidth()
-                                        .verticalScroll(androidx.compose.foundation.rememberScrollState())
+                                        .verticalScroll(rememberScrollState())
                                 ) {
-                                    val scoreObj = com.example.sequoia.ui.repository.ScoreImpl()
-                                    val stringScores = scoreObj.getScore(
-                                        com.example.sequoia.ui.theme.gameIds["SimonSays"],
-                                        androidx.compose.ui.platform.LocalContext.current
+                                    val stringScores = ScoreImpl.getScore(
+                                        gameIds["SimonSays"],
+                                        LocalContext.current
                                     )
-                                    androidx.compose.material3.Text(
+                                    Text(
                                         text = stringScores,
                                         fontSize = 22.sp,
-                                        fontWeight = androidx.compose.ui.text.font.FontWeight.Bold,
-                                        color = com.example.sequoia.ui.theme.PlayTextColor,
-                                        modifier = androidx.compose.ui.Modifier
-                                            .align(androidx.compose.ui.Alignment.CenterHorizontally)
+                                        fontWeight = FontWeight.Bold,
+                                        color = PlayTextColor,
+                                        modifier = Modifier
+                                            .align(Alignment.CenterHorizontally)
                                     )
                                 }
                             }
@@ -193,8 +192,7 @@ fun HistoryScreen(mainViewModel: HistoryViewModel = viewModel(), navController: 
                                         .background(InfoButtonColor)
                                         .fillMaxWidth()
                                         .verticalScroll(rememberScrollState())) {
-                                    val scoreObj = ScoreImpl()
-                                    val stringScores = scoreObj.getScore(gameIds["PitchPerfect"], LocalContext.current)
+                                    val stringScores = ScoreImpl.getScore(gameIds["PitchPerfect"], LocalContext.current)
                                     Text(text = stringScores, fontSize = 22.sp, fontWeight = FontWeight.Bold, color = InfoTextColor,
                                         modifier= Modifier
                                             .align(Alignment.CenterHorizontally) )
@@ -251,8 +249,7 @@ fun HistoryScreen(mainViewModel: HistoryViewModel = viewModel(), navController: 
                                         .background(HistoryButtonColor)
                                         .fillMaxWidth()
                                         .verticalScroll(rememberScrollState())) {
-                                    val scoreObj = ScoreImpl()
-                                    val stringScores = scoreObj.getScore(gameIds["GotRhythm"], LocalContext.current)
+                                    val stringScores = ScoreImpl.getScore(gameIds["GotRhythm"], LocalContext.current)
                                     Text(text = stringScores, fontSize = 22.sp, fontWeight = FontWeight.Bold, color = HistoryTextColor,
                                         modifier= Modifier
                                             .align(Alignment.CenterHorizontally) )
@@ -309,8 +306,7 @@ fun HistoryScreen(mainViewModel: HistoryViewModel = viewModel(), navController: 
                                         .background(PlayButtonColor)
                                         .fillMaxWidth()
                                         .verticalScroll(rememberScrollState())) {
-                                    val scoreObj = ScoreImpl()
-                                    val stringScores = scoreObj.getScore(gameIds["LicketySplit"], LocalContext.current)
+                                    val stringScores = ScoreImpl.getScore(gameIds["LicketySplit"], LocalContext.current)
                                     Text(text = stringScores, fontSize = 22.sp, fontWeight = FontWeight.Bold, color = PlayTextColor,
                                         modifier= Modifier
                                             .align(Alignment.CenterHorizontally) )

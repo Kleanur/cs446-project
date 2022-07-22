@@ -20,7 +20,8 @@ import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.example.sequoia.route.Routes
-import com.example.sequoia.ui.repository.ScoreImpl
+import com.example.sequoia.repository.ScoreImpl
+import com.example.sequoia.repository.gameIds
 import com.example.sequoia.ui.theme.*
 
 @Composable
@@ -157,9 +158,8 @@ fun squarebutton(color : Color, pt: Boolean, index:Int, viewModel: SimonSaysView
 }
 
 fun saveScore(score: Int, context: Context) {
-    val scoreObj = ScoreImpl()
     gameIds["SimonSays"]?.let {
-        scoreObj.addScore(gameId = it,
+        ScoreImpl.addScore(gameId = it,
             gameScore = score, context = context)
     }
 }
