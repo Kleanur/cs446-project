@@ -1,5 +1,6 @@
 package com.example.sequoia.ui.history
 
+import android.content.Context
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -30,9 +31,10 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.draw.clip
 import com.example.sequoia.repository.gameIds
+import com.example.sequoia.route.Routes
+import com.example.sequoia.ui.simonsaysgame.saveScore
 
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun HistoryScreen(mainViewModel: HistoryViewModel = viewModel(), navController: NavController) {
 
@@ -40,6 +42,7 @@ fun HistoryScreen(mainViewModel: HistoryViewModel = viewModel(), navController: 
     var pitchPerfectBtn by remember { mutableStateOf(false) }
     var gotRhythmBtn by remember { mutableStateOf(false) }
     var licketySplitBtn by remember { mutableStateOf(false) }
+    val openDialog = remember { mutableStateOf(false)  }
     SequoiaTheme {
         // A surface container using the 'background' color from the theme
         Surface(
@@ -63,7 +66,7 @@ fun HistoryScreen(mainViewModel: HistoryViewModel = viewModel(), navController: 
                     textAlign = TextAlign.Start,
                 )
 
-                Card(
+                Column(
                     modifier = Modifier
                         .constrainAs(expandableHistory){
                             top.linkTo(nameHeaderTxt.bottom, margin = 24.dp)
@@ -313,6 +316,66 @@ fun HistoryScreen(mainViewModel: HistoryViewModel = viewModel(), navController: 
                                 }
                             }
                         }
+
+                        //white space
+                        Row(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .height(10.dp)
+                        ) {}
+
+
+                        //delete history button
+                        Row(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .height(100.dp)
+                        )
+                        {
+                            val context = LocalContext.current
+                            Button(
+                                onClick = {
+                                    openDialog.value = true
+                                },
+                                Modifier.fillMaxWidth(),
+                                shape = RoundedCornerShape(20),
+                                colors = ButtonDefaults.buttonColors(deleteHistoryButtonColor)
+                            ) {
+                                Text(
+                                    modifier = Modifier
+                                        .fillMaxWidth(),
+                                    text = "Delete Score History",
+                                    fontSize = 24.sp,
+                                    fontWeight = FontWeight.Bold,
+                                    color = deleteHistoryButtonText,
+                                    textAlign = TextAlign.Center,
+                                )
+                            }
+                            if(openDialog.value){
+                                AlertDialog(onDismissRequest = {},
+                                    title = { Text(text = "Delete all history?") },
+                                    confirmButton = {
+                                        Button(onClick = {
+                                            ScoreImpl.deleteAllHistory(context = context)
+                                            navController.navigate(Routes.History.route) {
+                                                popUpTo(Routes.Home.route)
+                                            }
+                                        }) {
+                                            Text("Confirm")
+                                        }
+                                    },
+                                    dismissButton = {
+                                        Button(onClick = {
+                                            navController.navigate(Routes.History.route) {
+                                                popUpTo(Routes.Home.route)
+                                            }
+                                        }) {
+                                            Text("Back to history")
+                                        }
+                                    }
+                                )
+                            }
+                        }
                     }
 
                 }
@@ -320,4 +383,5 @@ fun HistoryScreen(mainViewModel: HistoryViewModel = viewModel(), navController: 
         }
     }
 }
+
 
