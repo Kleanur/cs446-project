@@ -48,7 +48,8 @@ fun InfoScreen(navController: NavController) {
                         header2,
                         desc2,
                         refHeader,
-                        refList
+                        refList,
+                        disclaimer
                     ) = createRefs()
                     Text(
                         text = "About Us", fontSize = 32.sp, fontWeight = FontWeight.Bold,
@@ -139,6 +140,20 @@ fun InfoScreen(navController: NavController) {
                             width = Dimension.matchParent
                         },
                         textAlign = TextAlign.Start,
+                    )
+
+                    Text(
+                        text = "This app is not a substitute for professional aid and should not be used as such.",
+                        fontSize = 16.sp,
+                        fontWeight = FontWeight.Bold,
+                        color = InfoScreenTextColor,
+                        modifier = Modifier.constrainAs(disclaimer) {
+                            top.linkTo(refList.bottom, margin = 8.dp)
+                            start.linkTo(parent.start, margin = 8.dp)
+                            end.linkTo(parent.end, margin = 8.dp)
+                            width = Dimension.matchParent
+                        },
+                        textAlign = TextAlign.Center,
                     )
 
                 }
