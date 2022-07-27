@@ -4,6 +4,7 @@ import org.json.JSONObject
 import java.io.*
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
+import java.util.*
 
 object ScoreImpl {
 
@@ -16,11 +17,9 @@ object ScoreImpl {
         return score
     }
 
-
     fun addScore(gameId: Int, gameScore: Int, context: Context) {
-        val score = createJsonObj(gameId, gameScore).toString()
+        val score = createJsonObj(gameId, gameScore).toString() + "\n"
         val filename = games[gameId]
-        println(gameId)
         val file = File(context.filesDir, filename)
         if(file.exists() && !file.isDirectory) {
             File(context.filesDir, filename).appendText(score)
@@ -32,12 +31,15 @@ object ScoreImpl {
             bufferedWriter.write(score)
             bufferedWriter.close()
         }
+        updateTree(context)
     }
-
 
     fun getScore(gameId: Int?, context: Context): String{
         val filename = games[gameId]
         val file = File(context.filesDir, filename)
+        if(!(file.exists() && !file.isDirectory)) {
+           return ""
+        }
         val fileReader = FileReader(file)
         val bufferedReader = BufferedReader(fileReader)
         val stringBuilder = StringBuilder()
@@ -51,26 +53,28 @@ object ScoreImpl {
         return response
     }
 
-    fun getAllScores(gameId: Int?, context: Context): List<Score>{
-        val scores : MutableList<Score> = mutableListOf<Score>()
+
+    fun getYValues(gameId: Int?, context: Context): List<Int>{
+        val yValues : MutableList<Int> = mutableListOf()
         val filename = games[gameId]
         val file = File(context.filesDir, filename)
+        if(!(file.exists() && !file.isDirectory)) {
+            return Collections.emptyList()
+        }
         val fileReader = FileReader(file)
         val bufferedReader = BufferedReader(fileReader)
-        val stringBuilder = StringBuilder()
-        var line: String? = "Date : Score" + bufferedReader.readLine()
+        var line: String? =  bufferedReader.readLine()
         while (line != null) {
-            scores.add(createJsonObj(line))
-            stringBuilder.append(line).append("\n")
+           // println(line)
+            yValues+= (JSONObject(line).getInt("Score"))// JSONObject(line).get("Score").toString().toInt())
             line = bufferedReader.readLine()
         }
+       // println(yValues)
         bufferedReader.close()
-        val response = stringBuilder.toString()
-        return scores
+        return yValues
     }
 
-
-    fun createJsonObj(score: String): Score{
+    fun stringToJSON(score: String): Score{
         val jsonobj : JSONObject = JSONObject(score)
         val scoreobj : Score = Score(
             gameId = jsonobj.get("Id").toString().toInt(),
@@ -79,28 +83,84 @@ object ScoreImpl {
         return scoreobj
     }
 
-    /*public fun getStringScores(jsonlist : List<Score>): String{
-        //val itr: Iterator<Score> = jsonlist.Iterator(jsonlist.size)
-
-        var list: String = ""
-        list += "Date : Score\n"
-        while (itr.hasNext()) {
-           var tscore = itr.next()
-           list+= tscore.stringdate + " : " + tscore.score.toString() + "\n"
+    fun deleteAllHistory(context: Context){
+        for(i in 1..4){
+            val filename = games[i]
+            val file = File(context.filesDir, filename)
+            if (file.exists() && !file.isDirectory) {
+                file.createNewFile()
+                val fileWriter = FileWriter(file)
+                val bufferedWriter = BufferedWriter(fileWriter)
+                bufferedWriter.write("")
+                bufferedWriter.close()
+            }
         }
-        return list
-    }*/
-
-    fun getYValues(jsonlist : List<Score>): List<Int>{
-        val itr = jsonlist.listIterator()
-        val list: MutableList<Int> = mutableListOf()
-        while (itr.hasNext()) {
-            list.add(itr.next().score.toString().toInt())
-        }
-        return list
+        deleteTreeHistory(context)
     }
 
-    /*public fun deleteScores(context: Context): String{
 
-    }*/
+    // functions for Tree
+    fun updateTree(context: Context) {
+        val filename = games[treeid]
+        val file = File(context.filesDir, filename)
+        var currDate = LocalDateTime.now().toString()
+        if(file.exists() && !file.isDirectory) {
+            if(containsDate(file, currDate) == false)
+                File(context.filesDir, filename).appendText(currDate)
+        }
+        else if(LocalDateTime.now().dayOfMonth == 1){
+            file.createNewFile()
+            val fileWriter = FileWriter(file)
+            val bufferedWriter = BufferedWriter(fileWriter)
+            bufferedWriter.write(currDate)
+            bufferedWriter.close()
+        }
+        else{
+            file.createNewFile()
+            val fileWriter = FileWriter(file)
+            val bufferedWriter = BufferedWriter(fileWriter)
+            bufferedWriter.write(currDate)
+            bufferedWriter.close()
+        }
+    }
+
+    private fun containsDate(file: File, currDate: String): Boolean {
+        val fileReader = FileReader(file)
+        val bufferedReader = BufferedReader(fileReader)
+        var line: String? = bufferedReader.readLine()
+        var flag: Boolean = false
+        while (line != null) {
+            if (line.contains(currDate, ignoreCase = true))
+                flag = true
+            line = bufferedReader.readLine()
+        }
+        bufferedReader.close()
+        return flag
+    }
+
+    fun getTreeStage(context: Context): Int {
+        val filename = games[treeid]
+        var lines = 0
+        val file = File(context.filesDir, filename)
+        if (file.exists() && !file.isDirectory) {
+            val fileReader = FileReader(file)
+            val reader = BufferedReader(fileReader)
+            while (reader.readLine() != null)
+                lines++
+            reader.close()
+        }
+        return lines
+    }
+
+    fun deleteTreeHistory(context: Context){
+        val filename = games[treeid]
+        val file = File(context.filesDir, filename)
+        if (file.exists() && !file.isDirectory) {
+            file.createNewFile()
+            val fileWriter = FileWriter(file)
+            val bufferedWriter = BufferedWriter(fileWriter)
+            bufferedWriter.write("")
+            bufferedWriter.close()
+        }
+    }
 }

@@ -58,3 +58,8 @@ val GotRhythmPressedColor = Color(0xFF8A3FA3)
 /*** Lickety Split Colors ***/
 val LicketySplitBackgroundColor = Color(0xFFDAF2FF)
 val LicketySplitBoltColor = Color(0xFF273B4A)
+
+
+/*** History Colors ***/
+val deleteHistoryButtonColor = Color(0xFFCED4DA)
+val deleteHistoryButtonText = Color(0xFF343A40)

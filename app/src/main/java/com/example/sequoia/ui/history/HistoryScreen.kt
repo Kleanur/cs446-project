@@ -1,5 +1,6 @@
 package com.example.sequoia.ui.history
 
+import android.content.Context
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -30,9 +31,17 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.draw.clip
 import com.example.sequoia.repository.gameIds
+import com.example.sequoia.route.Routes
+import com.example.sequoia.ui.simonsaysgame.saveScore
+import me.bytebeats.views.charts.line.LineChart
+import me.bytebeats.views.charts.line.LineChartData
+import me.bytebeats.views.charts.line.render.line.SolidLineDrawer
+import me.bytebeats.views.charts.line.render.point.FilledCircularPointDrawer
+import me.bytebeats.views.charts.line.render.xaxis.SimpleXAxisDrawer
+import me.bytebeats.views.charts.line.render.yaxis.SimpleYAxisDrawer
+import me.bytebeats.views.charts.simpleChartAnimation
 
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun HistoryScreen(mainViewModel: HistoryViewModel = viewModel(), navController: NavController) {
 
@@ -40,6 +49,7 @@ fun HistoryScreen(mainViewModel: HistoryViewModel = viewModel(), navController: 
     var pitchPerfectBtn by remember { mutableStateOf(false) }
     var gotRhythmBtn by remember { mutableStateOf(false) }
     var licketySplitBtn by remember { mutableStateOf(false) }
+    val openDialog = remember { mutableStateOf(false)  }
     SequoiaTheme {
         // A surface container using the 'background' color from the theme
         Surface(
@@ -63,9 +73,9 @@ fun HistoryScreen(mainViewModel: HistoryViewModel = viewModel(), navController: 
                     textAlign = TextAlign.Start,
                 )
 
-                Card(
+                Column(
                     modifier = Modifier
-                        .constrainAs(expandableHistory){
+                        .constrainAs(expandableHistory) {
                             top.linkTo(nameHeaderTxt.bottom, margin = 24.dp)
                             start.linkTo(parent.start, margin = 16.dp)
                             end.linkTo(parent.end, margin = 16.dp)
@@ -113,7 +123,8 @@ fun HistoryScreen(mainViewModel: HistoryViewModel = viewModel(), navController: 
                         }
                         AnimatedVisibility(simonSaysBtn) {
                             Box(
-                                modifier = Modifier.fillMaxWidth()
+                                modifier = Modifier
+                                    .fillMaxWidth()
                                     .clip(
                                         shape = RoundedCornerShape(
                                             1
@@ -124,24 +135,11 @@ fun HistoryScreen(mainViewModel: HistoryViewModel = viewModel(), navController: 
                                     modifier = Modifier
                                         .background(PlayButtonColor)
                                         .fillMaxWidth()
-                                        .verticalScroll(rememberScrollState())
                                 ) {
-                                    val stringScores = ScoreImpl.getScore(
-                                        gameIds["SimonSays"],
-                                        LocalContext.current
-                                    )
-                                    Text(
-                                        text = stringScores,
-                                        fontSize = 22.sp,
-                                        fontWeight = FontWeight.Bold,
-                                        color = PlayTextColor,
-                                        modifier = Modifier
-                                            .align(Alignment.CenterHorizontally)
-                                    )
+                                    LineChartView(data = ScoreImpl.getYValues(gameIds["SimonSays"], LocalContext.current), pointcolor = PlayTextColor, linecolor = PlayTextColor)
                                 }
                             }
                         }
-
 
                         //white space
                         Row(
@@ -185,17 +183,15 @@ fun HistoryScreen(mainViewModel: HistoryViewModel = viewModel(), navController: 
                             }
                         }
                         AnimatedVisibility(pitchPerfectBtn) {
-                            Box(modifier = Modifier.fillMaxWidth()
+                            Box(modifier = Modifier
+                                .fillMaxWidth()
                                 .clip(shape = RoundedCornerShape(1))){
                                 Column(
                                     modifier = Modifier
                                         .background(InfoButtonColor)
                                         .fillMaxWidth()
                                         .verticalScroll(rememberScrollState())) {
-                                    val stringScores = ScoreImpl.getScore(gameIds["PitchPerfect"], LocalContext.current)
-                                    Text(text = stringScores, fontSize = 22.sp, fontWeight = FontWeight.Bold, color = InfoTextColor,
-                                        modifier= Modifier
-                                            .align(Alignment.CenterHorizontally) )
+                                    LineChartView(data = ScoreImpl.getYValues(gameIds["PitchPerfect"], LocalContext.current), pointcolor = InfoTextColor, linecolor = InfoTextColor)
                                 }
                             }
                         }
@@ -242,17 +238,15 @@ fun HistoryScreen(mainViewModel: HistoryViewModel = viewModel(), navController: 
                             }
                         }
                         AnimatedVisibility(gotRhythmBtn) {
-                            Box(modifier = Modifier.fillMaxWidth()
+                            Box(modifier = Modifier
+                                .fillMaxWidth()
                                 .clip(shape = RoundedCornerShape(1))){
                                 Column(
                                     modifier = Modifier
                                         .background(HistoryButtonColor)
                                         .fillMaxWidth()
                                         .verticalScroll(rememberScrollState())) {
-                                    val stringScores = ScoreImpl.getScore(gameIds["GotRhythm"], LocalContext.current)
-                                    Text(text = stringScores, fontSize = 22.sp, fontWeight = FontWeight.Bold, color = HistoryTextColor,
-                                        modifier= Modifier
-                                            .align(Alignment.CenterHorizontally) )
+                                    LineChartView(data = ScoreImpl.getYValues(gameIds["GotRhythm"], LocalContext.current), pointcolor = HistoryTextColor, linecolor = HistoryTextColor)
                                 }
                             }
                         }
@@ -299,18 +293,76 @@ fun HistoryScreen(mainViewModel: HistoryViewModel = viewModel(), navController: 
                             }
                         }
                         AnimatedVisibility(licketySplitBtn) {
-                            Box(modifier = Modifier.fillMaxWidth()
+                            Box(modifier = Modifier
+                                .fillMaxWidth()
                                 .clip(shape = RoundedCornerShape(1))){
                                 Column(
                                     modifier = Modifier
                                         .background(PlayButtonColor)
                                         .fillMaxWidth()
                                         .verticalScroll(rememberScrollState())) {
-                                    val stringScores = ScoreImpl.getScore(gameIds["LicketySplit"], LocalContext.current)
-                                    Text(text = stringScores, fontSize = 22.sp, fontWeight = FontWeight.Bold, color = PlayTextColor,
-                                        modifier= Modifier
-                                            .align(Alignment.CenterHorizontally) )
+                                    LineChartView(data = ScoreImpl.getYValues(gameIds["LicketySplit"], LocalContext.current), pointcolor = PlayTextColor, linecolor = PlayTextColor)
                                 }
+                            }
+                        }
+
+                        //white space
+                        Row(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .height(10.dp)
+                        ) {}
+
+
+                        //delete history button
+                        Row(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .height(100.dp)
+                        )
+                        {
+                            val context = LocalContext.current
+                            Button(
+                                onClick = {
+                                    openDialog.value = true
+                                },
+                                Modifier.fillMaxWidth(),
+                                shape = RoundedCornerShape(20),
+                                colors = ButtonDefaults.buttonColors(deleteHistoryButtonColor)
+                            ) {
+                                Text(
+                                    modifier = Modifier
+                                        .fillMaxWidth(),
+                                    text = "Delete Score History",
+                                    fontSize = 24.sp,
+                                    fontWeight = FontWeight.Bold,
+                                    color = deleteHistoryButtonText,
+                                    textAlign = TextAlign.Center,
+                                )
+                            }
+                            if(openDialog.value){
+                                AlertDialog(onDismissRequest = {},
+                                    title = { Text(text = "Delete all history?") },
+                                    confirmButton = {
+                                        Button(onClick = {
+                                            ScoreImpl.deleteAllHistory(context = context)
+                                            navController.navigate(Routes.History.route) {
+                                                popUpTo(Routes.Home.route)
+                                            }
+                                        }) {
+                                            Text("Confirm")
+                                        }
+                                    },
+                                    dismissButton = {
+                                        Button(onClick = {
+                                            navController.navigate(Routes.History.route) {
+                                                popUpTo(Routes.Home.route)
+                                            }
+                                        }) {
+                                            Text("Back to history")
+                                        }
+                                    }
+                                )
                             }
                         }
                     }
@@ -320,4 +372,38 @@ fun HistoryScreen(mainViewModel: HistoryViewModel = viewModel(), navController: 
         }
     }
 }
+
+
+
+@Composable
+fun LineChartView(data: List<Int>, linecolor: Color, pointcolor: Color) {
+    if(data.isEmpty()){
+        Text(text = "No data available.", fontSize = 22.sp, fontWeight = FontWeight.Bold, color = deleteHistoryButtonText)
+    }
+    else {
+        var pointList: MutableList<LineChartData.Point> = mutableListOf()
+        pointList.add(LineChartData.Point(0F, "0"))
+        for (index in data.indices) {
+            pointList.add(LineChartData.Point(data[index].toFloat(), (index+1).toString()))
+        }
+        println(pointList)
+        LineChart(
+            lineChartData = LineChartData(
+                points = pointList,
+                startAtZero = true
+            ),
+            // Optional properties.
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(150.dp),
+            animation = simpleChartAnimation(),
+            pointDrawer = FilledCircularPointDrawer(color = pointcolor),
+            lineDrawer = SolidLineDrawer(color= linecolor),
+            xAxisDrawer = SimpleXAxisDrawer(),
+            yAxisDrawer = SimpleYAxisDrawer(),
+            horizontalOffset = 10f
+        )
+    }
+}
+
 

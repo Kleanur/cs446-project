@@ -7,6 +7,7 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
@@ -19,6 +20,8 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.example.sequoia.route.Routes
 import com.example.sequoia.R
+import com.example.sequoia.repository.ScoreImpl
+import com.example.sequoia.repository.numericTreeStage
 import com.example.sequoia.ui.theme.*
 import com.example.sequoia.ui.theme.SequoiaTheme
 
@@ -165,7 +168,16 @@ fun HomeScreen(mainViewModel: HomeViewModel = viewModel(), navController: NavCon
                     }
                 }
 
-                Image(painter = painterResource(R.drawable.cs446_biggest_tree), contentDescription = "Image for Home Screen",  modifier = Modifier
+                var treecount = ScoreImpl.getTreeStage(LocalContext.current)
+                var treeSize = R.drawable.cs446_sprout
+                if(treecount>= numericTreeStage["biggest tree"]!!)
+                    treeSize = R.drawable.cs446_biggest_tree
+                else if (treecount >= numericTreeStage["big tree"]!!)
+                    treeSize = R.drawable.cs446_bigger_tree
+                else if (treecount >= numericTreeStage["small tree"]!!)
+                    treeSize = R.drawable.cs446_smaller_tree
+
+                Image(painter = painterResource(treeSize), contentDescription = "Image for Home Screen",  modifier = Modifier
                     .constrainAs(treeTmg) {
                         top.linkTo(infoBtn.bottom, margin = 24.dp)
                         start.linkTo(parent.start, margin = 5.dp)
@@ -173,7 +185,6 @@ fun HomeScreen(mainViewModel: HomeViewModel = viewModel(), navController: NavCon
                     }
                     .height(260.dp)
                     .padding(start = 5.dp, end = 5.dp) )
-
             }
         }
     }
