@@ -4,6 +4,7 @@ import org.json.JSONObject
 import java.io.*
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
+import java.util.*
 
 object ScoreImpl {
 
@@ -16,9 +17,8 @@ object ScoreImpl {
         return score
     }
 
-
     fun addScore(gameId: Int, gameScore: Int, context: Context) {
-        val score = createJsonObj(gameId, gameScore).toString()
+        val score = createJsonObj(gameId, gameScore).toString() + "\n"
         val filename = games[gameId]
         val file = File(context.filesDir, filename)
         if(file.exists() && !file.isDirectory) {
@@ -37,7 +37,7 @@ object ScoreImpl {
     fun getScore(gameId: Int?, context: Context): String{
         val filename = games[gameId]
         val file = File(context.filesDir, filename)
-        if((file.exists() && !file.isDirectory) ==  false) {
+        if(!(file.exists() && !file.isDirectory)) {
            return ""
         }
         val fileReader = FileReader(file)
@@ -54,41 +54,33 @@ object ScoreImpl {
     }
 
 
-
-    fun getAllScores(gameId: Int?, context: Context): List<Score>{
-        val scores : MutableList<Score> = mutableListOf<Score>()
+    fun getYValues(gameId: Int?, context: Context): List<Int>{
+        val yValues : MutableList<Int> = mutableListOf()
         val filename = games[gameId]
         val file = File(context.filesDir, filename)
+        if(!(file.exists() && !file.isDirectory)) {
+            return Collections.emptyList()
+        }
         val fileReader = FileReader(file)
         val bufferedReader = BufferedReader(fileReader)
-        val stringBuilder = StringBuilder()
-        var line: String? = "Date : Score" + bufferedReader.readLine()
+        var line: String? =  bufferedReader.readLine()
         while (line != null) {
-            scores.add(createJsonObj(line))
-            stringBuilder.append(line).append("\n")
+           // println(line)
+            yValues+= (JSONObject(line).getInt("Score"))// JSONObject(line).get("Score").toString().toInt())
             line = bufferedReader.readLine()
         }
+       // println(yValues)
         bufferedReader.close()
-        val response = stringBuilder.toString()
-        return scores
+        return yValues
     }
 
-    fun createJsonObj(score: String): Score{
+    fun stringToJSON(score: String): Score{
         val jsonobj : JSONObject = JSONObject(score)
         val scoreobj : Score = Score(
             gameId = jsonobj.get("Id").toString().toInt(),
             gameScore = jsonobj.get("Score").toString().toInt(),
             gameDate = jsonobj.get("Date").toString())
         return scoreobj
-    }
-
-    fun getYValues(jsonlist : List<Score>): List<Int>{
-        val itr = jsonlist.listIterator()
-        val list: MutableList<Int> = mutableListOf()
-        while (itr.hasNext()) {
-            list.add(itr.next().score.toString().toInt())
-        }
-        return list
     }
 
     fun deleteAllHistory(context: Context){
